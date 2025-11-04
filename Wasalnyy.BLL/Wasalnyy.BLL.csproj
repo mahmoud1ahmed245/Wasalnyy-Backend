@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\" />
+    <Folder Include="Mapper\" />
+    <Folder Include="ModelVm\" />
+    <Folder Include="Response\" />
+    <Folder Include="Service\Abstraction\" />
+    <Folder Include="Service\Implementation\" />
+  </ItemGroup>
+
+</Project>
