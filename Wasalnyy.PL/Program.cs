@@ -1,4 +1,7 @@
 
+using Microsoft.EntityFrameworkCore;
+using Wasalnyy.DAL.Database;
+
 namespace Wasalnyy.PL
 {
     public class Program
@@ -10,6 +13,12 @@ namespace Wasalnyy.PL
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+            var connectionString = builder.Configuration.GetConnectionString("TemplateConnection");
+
+            builder.Services.AddDbContext<WasalnyyDbContext>(options =>
+            options.UseSqlServer(connectionString));
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
