@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "XHG6fYNxwRw=",
+  "dgSpecHash": "bZKSD8T/Qj4=",
   "success": true,
   "projectFilePath": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.BLL\\Wasalnyy.BLL.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\COMPUMARTS\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\9.0.10\\microsoft.extensions.dependencyinjection.abstractions.9.0.10.nupkg.sha512"
+  ],
   "logs": []
 }

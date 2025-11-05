@@ -3,16 +3,40 @@
   "WorkspaceRootPath": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{3365D94B-7479-4354-925A-C7F4424A5B3F}|Wasalnyy.BLL\\Wasalnyy.BLL.csproj|d:\\iti materials\\projects\\wasalnyy\\wasalnyy-backend\\wasalnyy.bll\\wasalnyy.bll.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{3365D94B-7479-4354-925A-C7F4424A5B3F}|Wasalnyy.BLL\\Wasalnyy.BLL.csproj|solutionrelative:wasalnyy.bll\\wasalnyy.bll.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3365D94B-7479-4354-925A-C7F4424A5B3F}|Wasalnyy.BLL\\Wasalnyy.BLL.csproj|d:\\iti materials\\projects\\wasalnyy\\wasalnyy-backend\\wasalnyy.bll\\common\\modularbussinesslogiclayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3365D94B-7479-4354-925A-C7F4424A5B3F}|Wasalnyy.BLL\\Wasalnyy.BLL.csproj|solutionrelative:wasalnyy.bll\\common\\modularbussinesslogiclayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|d:\\iti materials\\projects\\wasalnyy\\wasalnyy-backend\\wasalnyy.dal\\common\\modulardataaccesslayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|solutionrelative:wasalnyy.dal\\common\\modulardataaccesslayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|d:\\iti materials\\projects\\wasalnyy\\wasalnyy-backend\\wasalnyy.dal\\database\\wasalnyydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|solutionrelative:wasalnyy.dal\\database\\wasalnyydbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|d:\\iti materials\\projects\\wasalnyy\\wasalnyy-backend\\wasalnyy.dal\\entities\\admins.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|solutionrelative:wasalnyy.dal\\entities\\admins.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|d:\\iti materials\\projects\\wasalnyy\\wasalnyy-backend\\wasalnyy.dal\\entities\\drivers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|solutionrelative:wasalnyy.dal\\entities\\drivers.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|d:\\iti materials\\projects\\wasalnyy\\wasalnyy-backend\\wasalnyy.dal\\entities\\riders.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|solutionrelative:wasalnyy.dal\\entities\\riders.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|d:\\iti materials\\projects\\wasalnyy\\wasalnyy-backend\\wasalnyy.dal\\global\\global.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{BD194552-7B64-4286-B27D-504BDF422B59}|Wasalnyy.DAL\\Wasalnyy.DAL.csproj|solutionrelative:wasalnyy.dal\\global\\global.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3365D94B-7479-4354-925A-C7F4424A5B3F}|Wasalnyy.BLL\\Wasalnyy.BLL.csproj|d:\\iti materials\\projects\\wasalnyy\\wasalnyy-backend\\wasalnyy.bll\\global\\global.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3365D94B-7479-4354-925A-C7F4424A5B3F}|Wasalnyy.BLL\\Wasalnyy.BLL.csproj|solutionrelative:wasalnyy.bll\\global\\global.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3365D94B-7479-4354-925A-C7F4424A5B3F}|Wasalnyy.BLL\\Wasalnyy.BLL.csproj|d:\\iti materials\\projects\\wasalnyy\\wasalnyy-backend\\wasalnyy.bll\\wasalnyy.bll.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{3365D94B-7479-4354-925A-C7F4424A5B3F}|Wasalnyy.BLL\\Wasalnyy.BLL.csproj|solutionrelative:wasalnyy.bll\\wasalnyy.bll.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,24 +46,102 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
+              "Title": "ModularBussinessLogicLayer.cs",
+              "DocumentMoniker": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.BLL\\Common\\ModularBussinessLogicLayer.cs",
+              "RelativeDocumentMoniker": "Wasalnyy.BLL\\Common\\ModularBussinessLogicLayer.cs",
+              "ToolTip": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.BLL\\Common\\ModularBussinessLogicLayer.cs",
+              "RelativeToolTip": "Wasalnyy.BLL\\Common\\ModularBussinessLogicLayer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T09:39:39.794Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ModularDataAccessLayer.cs",
+              "DocumentMoniker": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Common\\ModularDataAccessLayer.cs",
+              "RelativeDocumentMoniker": "Wasalnyy.DAL\\Common\\ModularDataAccessLayer.cs",
+              "ToolTip": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Common\\ModularDataAccessLayer.cs",
+              "RelativeToolTip": "Wasalnyy.DAL\\Common\\ModularDataAccessLayer.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T09:36:09.266Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Admins.cs",
+              "DocumentMoniker": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Entities\\Admins.cs",
+              "RelativeDocumentMoniker": "Wasalnyy.DAL\\Entities\\Admins.cs",
+              "ToolTip": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Entities\\Admins.cs",
+              "RelativeToolTip": "Wasalnyy.DAL\\Entities\\Admins.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T09:10:50.279Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "WasalnyyDbContext.cs",
+              "DocumentMoniker": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Database\\WasalnyyDbContext.cs",
+              "RelativeDocumentMoniker": "Wasalnyy.DAL\\Database\\WasalnyyDbContext.cs",
+              "ToolTip": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Database\\WasalnyyDbContext.cs",
+              "RelativeToolTip": "Wasalnyy.DAL\\Database\\WasalnyyDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T09:08:08.753Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Drivers.cs",
+              "DocumentMoniker": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Entities\\Drivers.cs",
+              "RelativeDocumentMoniker": "Wasalnyy.DAL\\Entities\\Drivers.cs",
+              "ToolTip": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Entities\\Drivers.cs",
+              "RelativeToolTip": "Wasalnyy.DAL\\Entities\\Drivers.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T09:03:27.025Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Riders.cs",
+              "DocumentMoniker": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Entities\\Riders.cs",
+              "RelativeDocumentMoniker": "Wasalnyy.DAL\\Entities\\Riders.cs",
+              "ToolTip": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Entities\\Riders.cs",
+              "RelativeToolTip": "Wasalnyy.DAL\\Entities\\Riders.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-05T09:03:18.797Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "global.cs",
               "DocumentMoniker": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Global\\global.cs",
               "RelativeDocumentMoniker": "Wasalnyy.DAL\\Global\\global.cs",
               "ToolTip": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.DAL\\Global\\global.cs",
               "RelativeToolTip": "Wasalnyy.DAL\\Global\\global.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAHAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-11-04T19:33:42.673Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 8,
               "Title": "global.cs",
               "DocumentMoniker": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.BLL\\Global\\global.cs",
               "RelativeDocumentMoniker": "Wasalnyy.BLL\\Global\\global.cs",
@@ -47,19 +149,21 @@
               "RelativeToolTip": "Wasalnyy.BLL\\Global\\global.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-11-04T19:32:48.052Z"
+              "WhenOpened": "2025-11-04T19:32:48.052Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Wasalnyy.BLL.csproj",
               "DocumentMoniker": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.BLL\\Wasalnyy.BLL.csproj",
               "RelativeDocumentMoniker": "Wasalnyy.BLL\\Wasalnyy.BLL.csproj",
               "ToolTip": "D:\\ITI Materials\\Projects\\Wasalnyy\\Wasalnyy-Backend\\Wasalnyy.BLL\\Wasalnyy.BLL.csproj",
               "RelativeToolTip": "Wasalnyy.BLL\\Wasalnyy.BLL.csproj",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2025-11-04T19:25:08.778Z"
+              "WhenOpened": "2025-11-04T19:25:08.778Z",
+              "EditorCaption": ""
             }
           ]
         }

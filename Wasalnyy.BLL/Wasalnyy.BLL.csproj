@@ -7,12 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Common\" />
     <Folder Include="Mapper\" />
     <Folder Include="ModelVm\" />
     <Folder Include="Response\" />
     <Folder Include="Service\Abstraction\" />
     <Folder Include="Service\Implementation\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.10" />
   </ItemGroup>
 
 </Project>

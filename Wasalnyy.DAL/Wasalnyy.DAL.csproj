@@ -7,12 +7,14 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Entities\" />
-    <Folder Include="Common\" />
     <Folder Include="Configuration\" />
-    <Folder Include="Database\" />
-    <Folder Include="Repos\Abstraction\" />
-    <Folder Include="Repos\Implementation\" />
+    <Folder Include="Repo\Abstraction\" />
+    <Folder Include="Repo\Implementation\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNet.Identity.EntityFramework" Version="2.2.4" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.10" />
   </ItemGroup>
 
 </Project>
