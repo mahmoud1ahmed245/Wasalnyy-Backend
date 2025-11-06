@@ -1,0 +1,9 @@
+.vs/
+bin/
+obj/
+Wasalnyy.BLL/obj/
+Wasalnyy.BLL/bin/
+Wasalnyy.DAL/obj/
+Wasalnyy.DAL/bin/
+Wasalnyy.PL/bin/
+Wasalnyy.PL/obj/

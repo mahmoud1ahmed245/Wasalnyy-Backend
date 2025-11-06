@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Wasalnyy.DAL")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+548cbf4423e3d99be2ecee091a53211e12031819")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+aaca7213c9496000fab6f6f903baef298927a20d")]
 [assembly: System.Reflection.AssemblyProductAttribute("Wasalnyy.DAL")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Wasalnyy.DAL")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
