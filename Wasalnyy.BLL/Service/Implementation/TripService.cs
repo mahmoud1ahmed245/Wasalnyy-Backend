@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Wasalnyy.BLL.Service.Abstraction;
+
+namespace Wasalnyy.BLL.Service.Implementation
+{
+    public class TripService : ITripService
+    {
+    }
+}

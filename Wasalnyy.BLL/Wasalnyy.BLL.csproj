@@ -7,9 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="DTO\" />
     <Folder Include="Mapper\" />
-    <Folder Include="ModelVm\" />
-    <Folder Include="Response\" />
     <Folder Include="Service\Abstraction\" />
     <Folder Include="Service\Implementation\" />
   </ItemGroup>
