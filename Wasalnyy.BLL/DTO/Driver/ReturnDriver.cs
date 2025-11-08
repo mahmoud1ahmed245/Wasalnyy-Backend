@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Wasalnyy.BLL.Service.Abstraction;
 
-namespace Wasalnyy.BLL.Service.Implementation
+namespace Wasalnyy.BLL.DTO.Driver
 {
-    public class DriverService
+    public class ReturnDriver
     {
-
     }
 }

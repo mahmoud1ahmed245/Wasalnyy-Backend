@@ -4,6 +4,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using Wasalnyy.BLL.DTO.Driver;
 using Wasalnyy.BLL.DTO.Trip;
 using Wasalnyy.DAL.Entities;
 
@@ -22,11 +23,15 @@ namespace Wasalnyy.BLL.Service.Abstraction
         Task<IEnumerable<TripDto>> GetByRequestedTripsByZoneAsync(string zone);
         Task<TripPaginationDto> GetAllAsync(Expression<Func<Trip, object>> orderBy,
                                         bool descending = false, int pageNumber = 1, int pageSize = 10);
-        Task<TripPaginationDto> GetAllAsync(string riderId, Expression<Func<Trip, object>> orderBy,
+        Task<TripPaginationDto> GetAllRiderTripsAsync(string riderId, Expression<Func<Trip, object>> orderBy,
                                         bool descending = false, int pageNumber = 1, int pageSize = 10);
-        Task RequestTripAsync(RequestTripDto dto);
-        Task AcceptTripAsync(Guid tripId);
+
+        Task<TripPaginationDto> GetAllDriverTripsAsync(string driverId, Expression<Func<Trip, object>> orderBy,
+                                        bool descending = false, int pageNumber = 1, int pageSize = 10);
+        Task RequestTripAsync(string userId, RequestTripDto dto);
+        Task AcceptTripAsync(Guid driverId, Guid tripId);
         Task EndTripAsync(Guid tripId);
         Task CancelTripAsync(Guid tripId);
+        Task<IEnumerable<TripDto>> GetRequestedTripsByZone(Guid zoneId);
     }
 }

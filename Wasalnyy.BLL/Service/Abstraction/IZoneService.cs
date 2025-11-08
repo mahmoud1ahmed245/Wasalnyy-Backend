@@ -1,12 +1,14 @@
 ﻿using Wasalnyy.BLL.DTO.Zone;
+using Wasalnyy.DAL.Entities;
 
 namespace Wasalnyy.BLL.Service.Abstraction
 {
     public interface IZoneService
     {
-        Task<ReturnZoneDto?> GetZoneAsync(decimal lat, decimal lng);
+        Task<ReturnZoneDto?> GetZoneAsync(Guid zoneId);
+        Task<ReturnZoneDto?> GetZoneAsync(Coordinate coordinate);
         Task CreateZoneAsync(CreateZoneDto dto);
         Task DeleteZoneAsync(Guid zoneId);
-        Task UpdateZoneAsync(Guid zoneId, UpdateZoneDto dto );
+        Task UpdateZoneAsync(Guid zoneId, UpdateZoneDto dto);
     }
 }
