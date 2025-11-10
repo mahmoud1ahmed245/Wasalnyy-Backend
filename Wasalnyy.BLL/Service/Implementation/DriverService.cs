@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,37 +30,64 @@ namespace Wasalnyy.BLL.Service.Implementation
             _mapper = mapper;
         }
 
-
-        public async Task ChangeStatusAsync(string driverId, DriverStatus status)
+        private async Task ChangeStatusAsync(string driverId, DriverStatus status)
         {
             await _driverRepo.ChangeStatusAsync(driverId, status);
             await _driverRepo.SaveChangesAsync();
-            _driverEvents.FireDriverStatusChanged(driverId, status);
         }
 
-        public async Task<IEnumerable<ReturnDriver>> GetAvailableDriversByZoneAsync(Guid zoneId)
+        public async Task<IEnumerable<ReturnDriverDto>> GetAvailableDriversByZoneAsync(Guid zoneId)
         {
-           return _mapper.Map< IEnumerable<Driver>, IEnumerable<ReturnDriver>> (await _driverRepo.GetAvailableDriversByZoneAsync(zoneId));
+           return _mapper.Map< IEnumerable<Driver>, IEnumerable<ReturnDriverDto>> (await _driverRepo.GetAvailableDriversByZoneAsync(zoneId));
         }
 
-        public async Task<ReturnDriver?> GetByIdAsync(string id)
+        public async Task<ReturnDriverDto?> GetByIdAsync(string id)
         {
             var driver = await _driverRepo.GetByIdAsync(id);
             if(driver == null)
                 throw new NotFoundException($"Driver with ID '{id}' was not found.");
 
-            return _mapper.Map<Driver, ReturnDriver>(driver);
+            return _mapper.Map<Driver, ReturnDriverDto>(driver);
         }
 
-        public async Task UpdateLocationAsync(string driverId, Coordinate coordinate)
+        public async Task UpdateLocationAsync(string driverId, Coordinates coordinate)
         {
+            var driver = await _driverRepo.GetByIdAsync (driverId);
+
+            if(driver == null)
+                throw new NotFoundException($"Driver with ID '{driverId}' was not found.");
+
+            _driverEvents.FireDriverLocationUpdated(driverId, coordinate.Lng, coordinate.Lat);
+
             var zone = await _zoneService.GetZoneAsync(coordinate);
             
             if (zone == null)
                 throw new OutOfZoneException("You are out of zone.");
 
+            if (driver.ZoneId != zone.Id)
+                _driverEvents.FireDriverZoneChanged(driverId, zone.Id);
+
             await _driverRepo.UpdateDriverZoneAsync(driverId, zone.Id);
             await _driverRepo.SaveChangesAsync();
+        }
+
+        public async Task SetDriverOfflineAsync(string driverId)
+        {
+            await ChangeStatusAsync(driverId, DriverStatus.Offline);
+        }
+
+
+
+        public async Task SetDriverInTripAsync(string driverId, Guid tripId)
+        {
+            await ChangeStatusAsync(driverId, DriverStatus.InTrip);
+            _driverEvents.FireDriverStatusChangedToInTrip(driverId, tripId);
+        }
+
+        public async Task SetDriverAvailableAsync(string driverId)
+        {
+            await ChangeStatusAsync(driverId, DriverStatus.Available);
+            _driverEvents.FireDriverStatusChangedToAvailable(driverId);
         }
     }
 }

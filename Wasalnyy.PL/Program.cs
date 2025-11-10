@@ -2,12 +2,14 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using Wasalnyy.BLL.Common;
+using Wasalnyy.BLL.Settings;
+using Wasalnyy.DAL.Common;
 using Wasalnyy.DAL.Database;
 using Wasalnyy.DAL.Entities;
 using Wasalnyy.PL.Hubs;
-
-using Wasalnyy.BLL.Common;
-using Wasalnyy.DAL.Common;
 namespace Wasalnyy.PL
 {
     public class Program
@@ -32,6 +34,9 @@ namespace Wasalnyy.PL
              options.AccessDeniedPath = new PathString("/Account/Login");
              });
 
+            builder.Services.Configure<PricingSettings>(builder.Configuration.GetSection("PricingSettings"));
+            builder.Services.AddScoped<PricingSettings>(sp =>
+                sp.GetRequiredService<IOptions<PricingSettings>>().Value);
 
 
             builder.Services.AddIdentityCore<User>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -44,6 +49,7 @@ namespace Wasalnyy.PL
 
             builder.Services.AddBussinessInPL();
             builder.Services.AddBussinessInDAL();
+            builder.Services.AddHttpClient();
 
             var app = builder.Build();
 
@@ -61,7 +67,7 @@ namespace Wasalnyy.PL
 
             app.UseAuthentication();
             app.UseAuthorization();
-            app.MapHub<TripHub>("/ride");
+            app.MapHub<WasalnyyHub>("/Wasalnyy");
 
 
             app.MapControllers();

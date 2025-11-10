@@ -26,7 +26,7 @@ namespace Wasalnyy.BLL.Service.Implementation
             throw new NotImplementedException();
         }
 
-        public Task<ReturnZoneDto?> GetZoneAsync(Coordinate coordinate)
+        public Task<ReturnZoneDto?> GetZoneAsync(Coordinates coordinate)
         {
             throw new NotImplementedException();
         }

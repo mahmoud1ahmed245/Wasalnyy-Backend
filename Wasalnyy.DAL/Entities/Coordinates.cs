@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Wasalnyy.DAL.Entities
 {
     [Owned]
-    public class Coordinate
+    public class Coordinates
     {
         public decimal Lat { get; set; }
         public decimal Lng { get; set; }

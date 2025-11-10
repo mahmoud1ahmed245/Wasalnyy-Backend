@@ -9,11 +9,11 @@ namespace MVCTask.DAL.Configrations
         {
             builder.HasKey(t => t.Id);;
 
-            builder.Property(t => t.Distination)
+            builder.Property(t => t.DistinationCoordinates)
                 .IsRequired()
                 .HasMaxLength(500);
 
-            builder.Property(t => t.PickupPoint)
+            builder.Property(t => t.PickupCoordinates)
                 .IsRequired()
                 .HasMaxLength(500);
 

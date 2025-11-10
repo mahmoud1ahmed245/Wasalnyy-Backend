@@ -11,9 +11,11 @@ namespace Wasalnyy.BLL.Service.Abstraction
 {
     public interface IDriverService
     {
-        Task ChangeStatusAsync(string driverId, DriverStatus status);
-        Task UpdateLocationAsync(string driverId, Coordinate coordinate);
-        Task<ReturnDriver?> GetByIdAsync(string id);
-        Task<IEnumerable<ReturnDriver>> GetAvailableDriversByZoneAsync(Guid zoneId);
+        Task SetDriverOfflineAsync(string driverId);
+        Task SetDriverInTripAsync(string driverId, Guid tripId);
+        Task SetDriverAvailableAsync(string driverId);
+        Task UpdateLocationAsync(string driverId, Coordinates coordinate);
+        Task<ReturnDriverDto?> GetByIdAsync(string id);
+        Task<IEnumerable<ReturnDriverDto>> GetAvailableDriversByZoneAsync(Guid zoneId);
     }
 }
