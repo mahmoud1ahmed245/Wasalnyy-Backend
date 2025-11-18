@@ -33,6 +33,15 @@ namespace Wasalnyy.BLL.Service.Implementation
 		}
 		public async Task<AuthResult> RegisterDriverAsync(RegisterDriverDto dto)
 		{
+			var existingUser = await _userManager.FindByEmailAsync(dto.Email);
+			if (existingUser != null)
+			{
+				return new AuthResult
+				{
+					Success = false,
+					Message = "Email is already registered"
+				};
+			}
 			var driver = new Driver
 			{
 				UserName = dto.Email,
@@ -60,7 +69,7 @@ namespace Wasalnyy.BLL.Service.Implementation
 
 			await _userManager.AddToRoleAsync(driver, "Driver");
 			var token = await _jwtHandler.GenerateToken(driver);
-			return new AuthResult { Success = true, Message = "Driver registered successfully", Token = token };
+			return new AuthResult { Success = true, Message = "Driver registered successfully", Token = token, DriverId= driver.Id };
 		}
 
 		public async Task<AuthResult> RegisterRiderAsync(RegisterRiderDto dto)

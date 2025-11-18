@@ -78,6 +78,7 @@ namespace Wasalnyy.PL.Controllers
 			return Ok(result.Message);
 		}
 		[HttpPost("login/driver-face")]
+		[Consumes("multipart/form-data")]
 		public async Task<IActionResult> FaceLogin([FromForm] FaceLoginRequestDto model)
 		{
 			if (model.FaceImage == null || model.FaceImage.Length == 0)
