@@ -1,12 +1,13 @@
 
 using Microsoft.AspNetCore.Authentication.Cookies;
+using FaceRecognitionDotNet;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Wasalnyy.BLL.Common;
 using Wasalnyy.BLL.Common;
 using Wasalnyy.BLL.EventHandlers.Abstraction;
+using Wasalnyy.BLL.Service.Implementation;
 using Wasalnyy.BLL.Settings;
 using Wasalnyy.DAL.Common;
 using Wasalnyy.DAL.Database;
@@ -16,61 +17,71 @@ using Wasalnyy.PL.Hubs;
 using Wasalnyy.PL.Middleware;
 namespace Wasalnyy.PL
 {
-    public class Program
-    {
-        public static async Task Main(string[] args)
-        {
-            var builder = WebApplication.CreateBuilder(args);
+	public class Program
+	{
+		public static async Task Main(string[] args)
+		{
+			var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://127.0.0.1:5500", "http://localhost:5500", "http://localhost:4200") // frontend URLs
-                            .AllowAnyHeader()
-                            .AllowAnyMethod()
-                            .AllowCredentials();
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
                 });
             });
 
-            // Add services to the container.
-            builder.Services.AddControllers();
-            builder.Services.AddSignalR();
+			// Add services to the container.
+			builder.Services.AddControllers();
+			builder.Services.AddSignalR();
 
 			builder.Services.AddDbContext<WasalnyyDbContext>(options =>
-	            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+			  options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 
-            builder.Services.Configure<PricingSettings>(builder.Configuration.GetSection("PricingSettings"));
-            builder.Services.AddScoped<PricingSettings>(sp =>
-                sp.GetRequiredService<IOptions<PricingSettings>>().Value);
+			builder.Services.Configure<PricingSettings>(builder.Configuration.GetSection("PricingSettings"));
+			builder.Services.AddScoped<PricingSettings>(sp =>
+				sp.GetRequiredService<IOptions<PricingSettings>>().Value);
 
 
-            builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-                           .AddEntityFrameworkStores<WasalnyyDbContext>()
-                           .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
+			builder.Services.AddIdentity<User, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+						   .AddEntityFrameworkStores<WasalnyyDbContext>()
+						   .AddTokenProvider<DataProtectorTokenProvider<User>>(TokenOptions.DefaultProvider);
 
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+			builder.Services.AddEndpointsApiExplorer();
+			builder.Services.AddSwaggerGen();
 
+			builder.Services.AddCors(options =>
+			{
+				options.AddPolicy("AllowAngular",
+					policy => policy.WithOrigins("http://localhost:4200")
+									.AllowAnyHeader()
+									.AllowAnyMethod());
+			});
+			var modelPath = Path.Combine(builder.Environment.ContentRootPath, "models");
+			Console.WriteLine($"Loading face models from: {modelPath}");
+			builder.Services.AddSingleton(sp =>
+			{
+				return FaceRecognition.Create(modelPath);
+			});
+			builder.Services.AddBussinessInPL(builder.Configuration);
+			builder.Services.AddBussinessInDAL();
+			builder.Services.AddHttpClient();
             builder.Services.AddSingleton<IDriverNotifier, DriverNotifier>();
             builder.Services.AddSingleton<IRiderNotifier, RiderNotifier>();
             builder.Services.AddSingleton<ITripNotifier, TripNotifier>();
             builder.Services.AddSingleton<IWasalnyyHubNotifier, WasalnyyHubNotifier>();
 
 
-            builder.Services.AddBussinessInPL(builder.Configuration);
-            builder.Services.AddBussinessInDAL();
             builder.Services.AddHttpClient();
 
-            var app = builder.Build();
+			var app = builder.Build();
 
-            app.UseBussinessEventSubscriptions();
+			app.UseBussinessEventSubscriptions();
 
-            app.UseCors("AllowAll");
-            // Configure the HTTP request pipeline.
-            if (app.Environment.IsDevelopment())
 			using (var scope = app.Services.CreateScope())
 			{
 				var services = scope.ServiceProvider;
@@ -91,6 +102,7 @@ namespace Wasalnyy.PL
             app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
+            app.UseCors("AllowAngular");
 
             app.UseStaticFiles();
             app.UseMiddleware<ExptionhandlingMiddleware>();

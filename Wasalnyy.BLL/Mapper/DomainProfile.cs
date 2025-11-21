@@ -5,6 +5,8 @@ using Wasalnyy.BLL.DTO.Pricing;
 using Wasalnyy.BLL.DTO.Rider;
 using Wasalnyy.BLL.DTO.Trip;
 using Wasalnyy.BLL.DTO.Zone;
+using Wasalnyy.BLL.DTO.Update;
+using Wasalnyy.BLL.DTO.Wallet;
 
 namespace Wasalnyy.BLL.Mapper
 {
@@ -24,6 +26,17 @@ namespace Wasalnyy.BLL.Mapper
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
                 .ForMember(dest => dest.RiderId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image));
+
+         CreateMap<UpdateRider,Rider>().ReverseMap();
+            CreateMap<UpdateDriver, Driver>().ReverseMap();
+
+            // Wallet mappings
+            CreateMap<Wallet, WalletDto>().ReverseMap();
+
+            CreateMap<WalletTransaction, WalletTransactionDto>()
+                .ForMember(dest => dest.TransactionType,
+                           opt => opt.MapFrom(src => src.TransactionType.ToString()));
+
 
 
             CreateMap<RequestTripDto, Trip>()

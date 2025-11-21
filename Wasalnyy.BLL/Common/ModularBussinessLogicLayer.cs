@@ -27,6 +27,9 @@ namespace Wasalnyy.BLL.Common
             services.AddScoped<IRiderService, RiderService>();
             services.AddScoped<IRouteService, RouteService>();
             services.AddScoped<IWasalnyyHubService, WasalnyyHubService>();
+            services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IPasswordService, PasswordService>();
 
             services.AddScoped<DriverServiceValidator>();
             services.AddScoped<TripServiceValidator>();
@@ -37,6 +40,7 @@ namespace Wasalnyy.BLL.Common
             services.AddSingleton<RiderEvents>();
             services.AddSingleton<TripEvents>();
             services.AddSingleton<WasalnyyHubEvents>();
+            services.AddSingleton<IFaceService, FaceService>();
 
 
 			services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
@@ -69,6 +73,7 @@ namespace Wasalnyy.BLL.Common
 
             services.AddScoped<JwtHandler>();
 			services.AddScoped<IAuthService, AuthService>();
+			services.AddScoped<IEmailService, EmailService>();
 			return services;
         }
         public static IApplicationBuilder UseBussinessEventSubscriptions(this IApplicationBuilder app)
