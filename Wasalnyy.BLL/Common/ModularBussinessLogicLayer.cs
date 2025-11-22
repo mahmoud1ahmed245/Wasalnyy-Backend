@@ -24,6 +24,9 @@ namespace Wasalnyy.BLL.Common
             
             services.AddScoped<IPaymentGetwayRepo, PaymentGetwayRepo>();
             services.AddScoped<IPaymentService, PaymentService>();
+            services.AddScoped<IWalletService, WalletService>();
+            services.AddScoped<IWalletTransactionRepo, WalletTransactionRepo>(); 
+
             // Register services
             services.AddScoped<IDriverService, DriverService>();
             services.AddScoped<ITripService, TripService>();

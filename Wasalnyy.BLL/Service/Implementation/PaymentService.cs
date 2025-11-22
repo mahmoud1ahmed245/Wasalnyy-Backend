@@ -2,6 +2,7 @@
 using Stripe;
 using Stripe.Checkout;
 using Wasalnyy.BLL.DTO.Payment;
+using Wasalnyy.BLL.DTO.Wallet;
 using Wasalnyy.DAL.Repo.Implementation;
 
 namespace Wasalnyy.BLL.Service.Implementation
@@ -11,12 +12,15 @@ namespace Wasalnyy.BLL.Service.Implementation
 		private readonly IConfiguration config;
 		private readonly IPaymentGetwayRepo paymentGetwayRepo;
         private readonly IMapper _mapper;
-        public PaymentService(IConfiguration config, IPaymentGetwayRepo  paymentGetwayRepo, IMapper mapper)
+		private readonly IWalletService	walletService;
+        public PaymentService(IConfiguration config, IPaymentGetwayRepo  paymentGetwayRepo, IMapper mapper, IWalletService walletService)
 		{
 			this.config = config;
 			StripeConfiguration.ApiKey = config["Stripe:SecretKey"];
 			this.paymentGetwayRepo = paymentGetwayRepo;
             this._mapper= mapper;
+
+			this.walletService = walletService;
         }
 		public async Task<string> CreatePaymentSession(decimal amount, string currency, string successUrl, string cancelUrl)
 		{
@@ -51,21 +55,31 @@ namespace Wasalnyy.BLL.Service.Implementation
 
 		public async Task<RiderPaymentSuccessResponse> HandleRiderPayment(RiderPaymentDetailsDTO paymentDetails)
 		{
-			// Map DTO to entity
-			var paymentEntity = _mapper.Map<GatewayPayment>(paymentDetails);
 
-			try 
+			//1 - Save the transaction in getwaypayments table
+		   var paymentEntity = _mapper.Map<GatewayPayment>(paymentDetails);
+
+			try
 			{
-                // Add payment using repository
-                var success = await paymentGetwayRepo.AddPaymentAsync(paymentEntity);
+				// Add payment using repository
+				var success = await paymentGetwayRepo.AddPaymentAsync(paymentEntity);
 
+			}
+			catch (Exception ex)
+			{
+				var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+				return new RiderPaymentSuccessResponse(false, $"An error occurred while saving payment transaction: {innerMessage}");
+			}
+			//2 - Update rider wallet balance
+
+		   var increaseWalletBalanceResponse = await walletService.IncreaseWalletAsync( paymentDetails.RiderId,paymentDetails.Amount);
+			if (increaseWalletBalanceResponse.IsSuccess==false)
+			{
+				return new RiderPaymentSuccessResponse(false, $"An error occurred while updating wallet: {increaseWalletBalanceResponse.Message}");
             }
-            catch (Exception ex)
-            {
-                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-                return new RiderPaymentSuccessResponse(false, $"An error occurred while processing payment: {innerMessage}");
-            }
+
             return new RiderPaymentSuccessResponse(true, "Payment processed successfully."); ;
+
 
         }
 
