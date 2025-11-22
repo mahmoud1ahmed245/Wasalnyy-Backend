@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Wasalnyy.BLL.DTO.Payment;
 using Wasalnyy.BLL.Service.Implementation;
+using Wasalnyy.DAL.Enum;
 
 namespace Wasalnyy.PL.Controllers
 {
@@ -24,7 +26,33 @@ namespace Wasalnyy.PL.Controllers
 			return Ok(new { url = sessionUrl });
 		}
 
+        [HttpPost("handle-rider-payment")]
+        public async Task<IActionResult> HandleRiderPayment([FromBody] RiderPaymentDetailsDTO paymentDetails)
+        {
+            if (paymentDetails == null)
+                return BadRequest("Payment result is required.");
+
+            if (paymentDetails.Amount <= 0)
+                return BadRequest("Amount must be greater than 0.");
+
+            if (string.IsNullOrWhiteSpace(paymentDetails.RiderId))
+                return BadRequest("RiderId is required.");
+
+            if (string.IsNullOrWhiteSpace(paymentDetails.TransactionId))
+                return BadRequest("TransactionId is required.");
+            if (paymentDetails.Status != PaymentStatus.Success)
+                return BadRequest("Payment Status is not in correct format");
+            // Call business layer
+            var result = await _paymentService.HandleRiderPayment(paymentDetails);
+
+            if (!result.IsSuccess) // <-- check the service response
+                return StatusCode(StatusCodes.Status500InternalServerError, result.Message);
+
+            return Ok(new { message = result.Message });
+        }
 
 
-	}
+
+
+    }
 }

@@ -2,7 +2,7 @@
 {
     public class GatewayPayment
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string RiderId { get; set; }
         public Rider Rider { get; set; }
         public string TransactionId { get; set; }
@@ -11,9 +11,5 @@
         public DateTime Date { get; set; } = DateTime.UtcNow;
     }
 
-    public enum PaymentStatus
-    {
-        Pass = 0,
-        Fail = 1
-    }
+   
 }

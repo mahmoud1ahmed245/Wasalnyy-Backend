@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace Wasalnyy.DAL.Enum
 {
-    internal class PaymentStatus
+    public enum PaymentStatus
     {
+        Fail = 0,
+        Success = 1
     }
 }

@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace Wasalnyy.BLL.DTO.Payment
 {
-    public class ChargeRiderWalletDTO
+    public class RiderPaymentDetailsDTO
     {
-        public decimal Amount { get; set; }
         public string RiderId { get; set; }
+        public string TransactionId { get; set; }
+        public PaymentStatus Status { get; set; }
+        public decimal Amount { get; set; }
+
 
     }
 }

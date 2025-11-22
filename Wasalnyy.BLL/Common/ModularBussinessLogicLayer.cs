@@ -9,6 +9,7 @@ using Wasalnyy.BLL.Service.Abstraction;
 using Wasalnyy.BLL.Service.Implementation;
 using Wasalnyy.BLL.Settings;
 using Wasalnyy.BLL.Validators;
+using Wasalnyy.DAL.Repo.Implementation;
 
 namespace Wasalnyy.BLL.Common
 {
@@ -19,6 +20,10 @@ namespace Wasalnyy.BLL.Common
 
             services.AddAutoMapper(x => x.AddProfile(new DomainProfile()));
 
+            //Payment 
+            
+            services.AddScoped<IPaymentGetwayRepo, PaymentGetwayRepo>();
+            services.AddScoped<IPaymentService, PaymentService>();
             // Register services
             services.AddScoped<IDriverService, DriverService>();
             services.AddScoped<ITripService, TripService>();
