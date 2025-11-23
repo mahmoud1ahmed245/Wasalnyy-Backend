@@ -1,12 +1,13 @@
 ﻿using AutoMapper;
 using Wasalnyy.BLL.DTO;
 using Wasalnyy.BLL.DTO.Driver;
+using Wasalnyy.BLL.DTO.Payment;
 using Wasalnyy.BLL.DTO.Pricing;
 using Wasalnyy.BLL.DTO.Rider;
 using Wasalnyy.BLL.DTO.Trip;
-using Wasalnyy.BLL.DTO.Zone;
 using Wasalnyy.BLL.DTO.Update;
 using Wasalnyy.BLL.DTO.Wallet;
+using Wasalnyy.BLL.DTO.Zone;
 
 namespace Wasalnyy.BLL.Mapper
 {
@@ -14,12 +15,18 @@ namespace Wasalnyy.BLL.Mapper
     {
         public DomainProfile()
         {
+            CreateMap<RiderPaymentDetailsDTO, GatewayPayment>();
+
+
+
+
             CreateMap<Driver, ReturnDriverDto>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
                 .ForMember(dest => dest.ZoneId, opt => opt.MapFrom(src => src.ZoneId))
                 .ForMember(dest => dest.License, opt => opt.MapFrom(src => src.License))
                 .ForMember(dest => dest.Coordinates, opt => opt.MapFrom(src => src.Coordinates))
+                .ForMember(dest => dest.DriverStatus, opt => opt.MapFrom(src => src.DriverStatus))
                 .ForMember(dest => dest.Vehicle, opt => opt.MapFrom(src => src.Vehicle));
 
             CreateMap<Rider, ReturnRiderDto>()
@@ -27,8 +34,7 @@ namespace Wasalnyy.BLL.Mapper
                 .ForMember(dest => dest.RiderId, opt => opt.MapFrom(src => src.Id))
                 .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image));
 
-         CreateMap<UpdateRider,Rider>().ReverseMap();
-            CreateMap<UpdateDriver, Driver>().ReverseMap();
+         
 
             // Wallet mappings
             CreateMap<Wallet, WalletDto>().ReverseMap();
@@ -64,6 +70,9 @@ namespace Wasalnyy.BLL.Mapper
                     .ForMember(dest => dest.Id, opt => opt.Ignore());
 
             CreateMap<Vehicle, VehicleDto>();
+            CreateMap<DriverUpdateDto, Driver>().ForAllMembers(opt => opt.Condition((src, dest, value) => value != null));
+            CreateMap<RiderUpdateDto, Rider>().ForAllMembers(opt => opt.Condition((src, dest, value) => value != null));
+
         }
     }
 }

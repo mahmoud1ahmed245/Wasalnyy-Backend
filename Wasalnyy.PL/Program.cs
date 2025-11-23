@@ -1,23 +1,19 @@
-
-using Microsoft.AspNetCore.Authentication.Cookies;
 using FaceRecognitionDotNet;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Wasalnyy.BLL.Common;
-using Wasalnyy.BLL.Common;
 using Wasalnyy.BLL.EventHandlers.Abstraction;
-using Wasalnyy.BLL.Service.Implementation;
 using Wasalnyy.BLL.Settings;
 using Wasalnyy.DAL.Common;
 using Wasalnyy.DAL.Database;
 using Wasalnyy.DAL.Entities;
 using Wasalnyy.PL.EventHandlers.Implementation;
+using Wasalnyy.PL.Filters;
 using Wasalnyy.PL.Hubs;
 using Wasalnyy.PL.Middleware;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
+
 namespace Wasalnyy.PL
 {
 	public class Program
@@ -26,19 +22,23 @@ namespace Wasalnyy.PL
 		{
 			var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("AllowAll", policy =>
-                {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
-                          .AllowAnyHeader();
-                });
-            });
+			builder.Services.AddCors(options =>
+			{
+				options.AddPolicy("AllowAll", policy =>
+				{
+					policy.AllowAnyOrigin()
+						  .AllowAnyMethod()
+						  .AllowAnyHeader();
+				});
+			});
 
 			// Add services to the container.
 			builder.Services.AddControllers();
-			builder.Services.AddSignalR();
+
+			builder.Services.AddSignalR(options =>
+			{
+				options.AddFilter<SignalRExceptionFilter>();
+			});
 
 			builder.Services.AddDbContext<WasalnyyDbContext>(options =>
 			  options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -57,29 +57,15 @@ namespace Wasalnyy.PL
 			builder.Services.AddEndpointsApiExplorer();
 			builder.Services.AddSwaggerGen();
 
-           // builder.Services.AddCors(options =>
-           // {
-           //     options.AddPolicy("AllowAngular", policy =>
-           //    policy.WithOrigins("http://localhost:4200")
-           //          .AllowAnyHeader()
-           //          .AllowAnyMethod()
-           //          .AllowCredentials()
-           //);
-           // });
-          builder.Services.AddCors(options =>
-            {
-                options.AddPolicy("CorsPolicy", builder =>
-                {
-                    builder
-                        .WithOrigins("http://localhost:4200") 
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials(); 
-                });
-            });
-
-
-            var modelPath = Path.Combine(builder.Environment.ContentRootPath, "models");
+			builder.Services.AddCors(options =>
+			{
+				options.AddPolicy("CorsPolicy",
+					policy => policy.WithOrigins("http://localhost:4200")
+									.AllowAnyHeader()
+									.AllowAnyMethod().
+									AllowCredentials());
+			});
+			var modelPath = Path.Combine(builder.Environment.ContentRootPath, "models");
 			Console.WriteLine($"Loading face models from: {modelPath}");
 			builder.Services.AddSingleton(sp =>
 			{
@@ -88,13 +74,14 @@ namespace Wasalnyy.PL
 			builder.Services.AddBussinessInPL(builder.Configuration);
 			builder.Services.AddBussinessInDAL();
 			builder.Services.AddHttpClient();
-            builder.Services.AddSingleton<IDriverNotifier, DriverNotifier>();
-            builder.Services.AddSingleton<IRiderNotifier, RiderNotifier>();
-            builder.Services.AddSingleton<ITripNotifier, TripNotifier>();
-            builder.Services.AddSingleton<IWasalnyyHubNotifier, WasalnyyHubNotifier>();
+			builder.Services.AddSingleton<IDriverNotifier, DriverNotifier>();
+			builder.Services.AddSingleton<IRiderNotifier, RiderNotifier>();
+			builder.Services.AddSingleton<ITripNotifier, TripNotifier>();
+			builder.Services.AddSingleton<IWasalnyyHubNotifier, WasalnyyHubNotifier>();
 
+			builder.Services.AddScoped<WasalnyyOnlineActionFilter>();
 
-            builder.Services.AddHttpClient();
+			builder.Services.AddHttpClient();
 
 			var app = builder.Build();
 
@@ -106,36 +93,26 @@ namespace Wasalnyy.PL
 				var userManager = services.GetRequiredService<UserManager<User>>();
 				var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
 
-                await DbSeeder.SeedAsync(userManager, roleManager);
-                
-                var connectionService = services.GetRequiredService<IWasalnyyHubService>();
-                await connectionService.DeleteAllConnectionsAsync();
-            }
+				await DbSeeder.SeedAsync(userManager, roleManager);
+
+				var connectionService = services.GetRequiredService<IWasalnyyHubService>();
+				await connectionService.DeleteAllConnectionsAsync();
+			}
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI();
-            }
-            app.UseHttpsRedirection();
-            app.UseRouting();
-
-            //// ? CORS before auth
-            //app.UseCors("AllowAngular");
-            app.UseCors("CorsPolicy");
-
-            app.UseAuthentication();
-            app.UseAuthorization();
-
-            app.UseStaticFiles();
-            app.UseMiddleware<ExptionhandlingMiddleware>();
-
-            // SignalR hub
-            app.MapHub<WasalnyyHub>("/Wasalnyy");
-
-            // Controllers
-            app.MapControllers();
-            app.Run();
-        }
-    }
+			{
+				app.UseSwagger();
+				app.UseSwaggerUI();
+			}
+			app.UseHttpsRedirection();
+			app.UseCors("CorsPolicy");
+			app.UseAuthentication();
+			app.UseAuthorization();
+			app.UseStaticFiles();
+			app.UseMiddleware<ExptionhandlingMiddleware>();
+			app.MapHub<WasalnyyHub>("/Wasalnyy");
+			app.MapControllers();
+			app.Run();
+		}
+	}
 }

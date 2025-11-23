@@ -5,7 +5,9 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wasalnyy.BLL.DTO;
 using Wasalnyy.BLL.DTO.Driver;
+using Wasalnyy.BLL.DTO.Rider;
 using Wasalnyy.BLL.Enents;
 using Wasalnyy.BLL.Exceptions;
 using Wasalnyy.BLL.Service.Abstraction;
@@ -81,7 +83,7 @@ namespace Wasalnyy.BLL.Service.Implementation
             _driverEvents.FireDriverLocationUpdated(driverId, coordinates);
         }
 
-        public async Task SetDriverOfflineAsync(string driverId)
+        public async Task SetDriverUnAvailableAsync(string driverId)
         {
             _validator.ValidateSetDriverOffline(driverId);
 
@@ -90,18 +92,18 @@ namespace Wasalnyy.BLL.Service.Implementation
             if (driver == null)
                 throw new NotFoundException($"Driver with ID '{driverId}' was not found.");
 
-            if(driver.DriverStatus == DriverStatus.Offline)
+            if(driver.DriverStatus == DriverStatus.UnAvailable)
                 return;
 
             if (driver.DriverStatus != DriverStatus.Available)
                 throw new AlreadyInTripException($"Driver with id {driverId} already in trip.");
 
-            driver.DriverStatus = DriverStatus.Offline;
+            driver.DriverStatus = DriverStatus.UnAvailable;
 
             await _driverRepo.UpdateAsync(driver);
             await _driverRepo.SaveChangesAsync();
 
-            _driverEvents.FireDriverStatusChangedToOffline(driverId);
+            _driverEvents.FireDriverStatusChangedToUnAvailable(driverId);
         }
 
 
@@ -115,7 +117,7 @@ namespace Wasalnyy.BLL.Service.Implementation
             if (driver == null)
                 throw new NotFoundException($"Driver with ID '{driverId}' was not found.");
 
-            if (driver.DriverStatus == DriverStatus.Offline)
+            if (driver.DriverStatus == DriverStatus.UnAvailable)
                 throw new DriverIsOfflineException($"Driver with ID '{driverId}'is offline.");
 
             if (driver.DriverStatus != DriverStatus.Available)
@@ -157,6 +159,86 @@ namespace Wasalnyy.BLL.Service.Implementation
             await _driverRepo.SaveChangesAsync();
 
             _driverEvents.FireDriverStatusChangedToAvailable(driverId, zone.Id);
+        }
+        public async Task<bool> UpdateDriverInfo(string id, DriverUpdateDto driverUpdate)
+        {
+            var oldriderinfos = await _driverRepo.GetByIdAsync(id);
+            if (oldriderinfos == null)
+            {
+                return false;
+            }
+
+            _mapper.Map(driverUpdate, oldriderinfos);
+            await _driverRepo.UpdateAsync(oldriderinfos);
+            await _driverRepo.SaveChangesAsync();
+            return true;
+
+        }
+
+        public async Task<string> DriverNameAsync(string driverId)
+        {
+            var driver = await _driverRepo.GetByIdAsync(driverId) ;
+            if (driver == null)
+                return string.Empty;
+
+            return driver.FullName;
+        }
+
+        public async Task<string?> DriverProfileImageAsync(string driverId)
+        {
+            var driver = await _driverRepo.GetByIdAsync(driverId);
+            if (driver == null)
+                return string.Empty;
+
+            return driver.Image;
+        }
+
+        public async Task<DriverStatus> GetDriverStatusAsync(string driverId)
+        {
+            var driver = await _driverRepo.GetByIdAsync(driverId);
+            return driver.DriverStatus;
+
+        }
+            
+
+        public async Task<int> GetTotalCompletedTripsAsync(string driverId)
+        {
+            var driver = await _driverRepo.GetByIdAsync(driverId);
+            if (driver == null)
+                return 0;
+
+            return driver.Trips.Count(t => t.TripStatus == TripStatus.Ended);
+        }
+
+        public Task<decimal> GetDriverRatingAsync(string driverId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<VehicleDto?> GetDriverVehicleInfoAsync(string driverId)
+        {
+            var driver = await _driverRepo.GetByIdAsync(driverId);
+            if(driver == null)
+            {
+                return null;
+            }
+            return _mapper.Map<VehicleDto>(driver.Vehicle);
+
+        }
+
+        public async Task<bool> IsDriverSuspendedAsync(string driverId)
+        {
+
+            var driver = await _driverRepo.GetByIdAsync(driverId);
+            if (driver == null)
+                return false;
+
+            return driver.IsSuspended;
+        }
+
+        public Task<decimal> GetDriverWalletBalanceAsync(string driverId)
+        {
+            throw new NotImplementedException();
         }
     }
 }
