@@ -2,7 +2,7 @@
 
 namespace Wasalnyy.DAL.Entities
 {
-    public class WalletTransaction
+    public class WalletTransactionLogs
     {
         public Guid Id { get; set; }
 

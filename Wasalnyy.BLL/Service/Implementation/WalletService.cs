@@ -104,7 +104,7 @@ namespace Wasalnyy.BLL.Service.Implementation
 
             await _walletRepo.UpdateAsync(wallet);
 
-            var log = new WalletTransaction
+            var log = new WalletTransactionLogs
             {
                 WalletId = wallet.Id,
                 Amount = amount,
@@ -127,59 +127,59 @@ namespace Wasalnyy.BLL.Service.Implementation
         //   TRANSFER (Rider -> Driver)
         // ============================================================
 
-        public async Task<bool> TransferAsync(string fromUserId, string toUserId, decimal amount, string? tripId = null)
-        {
-            if (amount <= 0)
-                return false;
+        //public async Task<bool> TransferAsync(string fromUserId, string toUserId, decimal amount, string? tripId = null)
+        //{
+        //    if (amount <= 0)
+        //        return false;
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
+        //    using var transaction = await _context.Database.BeginTransactionAsync();
 
-            var senderWallet = await _walletRepo.GetByUserIdAsync(fromUserId);
-            var receiverWallet = await _walletRepo.GetByUserIdAsync(toUserId);
+        //    var senderWallet = await _walletRepo.GetByUserIdAsync(fromUserId);
+        //    var receiverWallet = await _walletRepo.GetByUserIdAsync(toUserId);
 
-            if (senderWallet == null || receiverWallet == null)
-                return false;
+        //    if (senderWallet == null || receiverWallet == null)
+        //        return false;
 
-            if (senderWallet.Balance < amount)
-                return false;
+        //    if (senderWallet.Balance < amount)
+        //        return false;
 
-            // Sender
-            senderWallet.Balance -= amount;
-            senderWallet.ModifiedAt = DateTime.UtcNow;
-            await _walletRepo.UpdateAsync(senderWallet);
+        //    // Sender
+        //    senderWallet.Balance -= amount;
+        //    senderWallet.ModifiedAt = DateTime.UtcNow;
+        //    await _walletRepo.UpdateAsync(senderWallet);
 
-            var senderLog = new WalletTransaction
-            {
-                WalletId = senderWallet.Id,
-                Amount = amount,
-                TransactionType = WalletTransactionType.Debit,
-                Description = $"Trip Payment {tripId}",
-                CreatedAt = DateTime.UtcNow
-            };
-            await _transactionRepo.CreateAsync(senderLog);
+        //    var senderLog = new WalletTransaction
+        //    {
+        //        WalletId = senderWallet.Id,
+        //        Amount = amount,
+        //        TransactionType = WalletTransactionType.Debit,
+        //        Description = $"Trip Payment {tripId}",
+        //        CreatedAt = DateTime.UtcNow
+        //    };
+        //    await _transactionRepo.CreateAsync(senderLog);
 
 
-            // Receiver
-            receiverWallet.Balance += amount;
-            receiverWallet.ModifiedAt = DateTime.UtcNow;
-            await _walletRepo.UpdateAsync(receiverWallet);
+        //    // Receiver
+        //    receiverWallet.Balance += amount;
+        //    receiverWallet.ModifiedAt = DateTime.UtcNow;
+        //    await _walletRepo.UpdateAsync(receiverWallet);
 
-            var receiverLog = new WalletTransaction
-            {
-                WalletId = receiverWallet.Id,
-                Amount = amount,
-                TransactionType = WalletTransactionType.Credit,
-                Description = $"Trip Payment Received {tripId}",
-                CreatedAt = DateTime.UtcNow
-            };
-            await _transactionRepo.CreateAsync(receiverLog);
+        //    var receiverLog = new WalletTransaction
+        //    {
+        //        WalletId = receiverWallet.Id,
+        //        Amount = amount,
+        //        TransactionType = WalletTransactionType.Credit,
+        //        Description = $"Trip Payment Received {tripId}",
+        //        CreatedAt = DateTime.UtcNow
+        //    };
+        //    await _transactionRepo.CreateAsync(receiverLog);
 
-            await _walletRepo.SaveChangesAsync();
-            await _transactionRepo.SaveChangesAsync();
+        //    await _walletRepo.SaveChangesAsync();
+        //    await _transactionRepo.SaveChangesAsync();
 
-            await transaction.CommitAsync();
-            return true;
-        }
+        //    await transaction.CommitAsync();
+        //    return true;
+        //}
 
      
 

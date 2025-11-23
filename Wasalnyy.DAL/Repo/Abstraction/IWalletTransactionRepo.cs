@@ -8,9 +8,9 @@ namespace Wasalnyy.DAL.Repo.Abstraction
 {
     public interface IWalletTransactionRepo
     {
-        Task CreateAsync(WalletTransaction transaction);
-        Task<IEnumerable<WalletTransaction>> GetByWalletIdAsync(Guid walletId);
-        Task<WalletTransaction?> GetByIdAsync(Guid transactionId);
+        Task CreateAsync(WalletTransactionLogs transaction);
+        Task<IEnumerable<WalletTransactionLogs>> GetByWalletIdAsync(Guid walletId);
+        Task<WalletTransactionLogs?> GetByIdAsync(Guid transactionId);
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }
 }

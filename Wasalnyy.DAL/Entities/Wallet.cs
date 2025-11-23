@@ -18,6 +18,6 @@ namespace Wasalnyy.DAL.Entities
         public DateTime? ModifiedAt { get; set; }
 
         // Transaction history
-        public List<WalletTransaction> Transactions { get; set; } = new();
+        public List<WalletTransactionLogs> Transactions { get; set; } = new();
     }
 }

@@ -18,7 +18,7 @@ namespace Wasalnyy.DAL.Repo.Implementation
             _context = context;
         }
 
-        public async Task<bool> AddPaymentAsync(GatewayPayment getwayPayment)
+        public async Task<bool> AddPaymentAsync(GatewayPaymentTransactions getwayPayment)
         {
             
             await _context.GatewayPayments.AddAsync(getwayPayment);

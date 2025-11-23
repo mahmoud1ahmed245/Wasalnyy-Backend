@@ -62,7 +62,7 @@ namespace Wasalnyy.BLL.Service.Implementation
         }
         private async Task<RiderPaymentSuccessResponse> HandleSuccessfulPaymentAsync(RiderPaymentDetailsDTO paymentDetails)
         {
-            var paymentEntity = _mapper.Map<GatewayPayment>(paymentDetails);
+            var paymentEntity = _mapper.Map<GatewayPaymentTransactions>(paymentDetails);
             //1- save payment transaction in payment getway table as successful
             try
             {
@@ -85,7 +85,7 @@ namespace Wasalnyy.BLL.Service.Implementation
 
         private async Task<RiderPaymentSuccessResponse> HandleFailedPaymentAsync(RiderPaymentDetailsDTO paymentDetails)
         {
-            var paymentEntity = _mapper.Map<GatewayPayment>(paymentDetails);
+            var paymentEntity = _mapper.Map<GatewayPaymentTransactions>(paymentDetails);
             //save payment transaction in payment getway table as failed
             try
             {

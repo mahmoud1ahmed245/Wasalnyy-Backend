@@ -17,19 +17,19 @@ namespace Wasalnyy.DAL.Repo.Implementation
             _context = context;
         }
 
-        public async Task CreateAsync(WalletTransaction transaction)
+        public async Task CreateAsync(WalletTransactionLogs transaction)
         {
             await _context.WalletTransactions.AddAsync(transaction);
         }
 
-        public async Task<WalletTransaction?> GetByIdAsync(Guid transactionId)
+        public async Task<WalletTransactionLogs?> GetByIdAsync(Guid transactionId)
         {
             return await _context.WalletTransactions
                 .AsNoTracking()
                 .SingleOrDefaultAsync(t => t.Id == transactionId);
         }
 
-        public async Task<IEnumerable<WalletTransaction>> GetByWalletIdAsync(Guid walletId)
+        public async Task<IEnumerable<WalletTransactionLogs>> GetByWalletIdAsync(Guid walletId)
         {
             return await _context.WalletTransactions
                 .AsNoTracking()

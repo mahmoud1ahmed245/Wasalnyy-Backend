@@ -11,7 +11,7 @@ namespace Wasalnyy.DAL.Repo.Abstraction
     {
 
 
-        Task<bool> AddPaymentAsync(GatewayPayment getwayPayment);
+        Task<bool> AddPaymentAsync(GatewayPaymentTransactions getwayPayment);
       
     }
 }
