@@ -50,21 +50,21 @@ namespace Wasalnyy.BLL.Service.Implementation
         //   ADD MONEY TO WALLET
         // ============================================================
 
-        public async Task<IncreaseWalletBalanceResponse> IncreaseWalletAsync(string userId, decimal amount,DateTime dateTime)
+        public async Task<IncreaseWalletBalanceResponse> IncreaseWalletAsync(IncreaseWalletDTO increaseWalletDTO)
         {
 
 
-            if (amount <= 0)
+            if (increaseWalletDTO.Amount <= 0)
                 return new IncreaseWalletBalanceResponse(false ,"Amount of money cant be negative or zero");
 
 
             try
             {
-                var wallet = await _walletRepo.GetWalletOfUserIdAsync(userId);
+                var wallet = await _walletRepo.GetWalletOfUserIdAsync(increaseWalletDTO.UserId);
                 if (wallet == null)
                     return new IncreaseWalletBalanceResponse(false, "This User doesnt have Wallet Call Dev to make sure Rider or driver User have wallet created");
-                wallet.Balance += amount;
-                wallet.ModifiedAt = dateTime;
+                wallet.Balance += increaseWalletDTO.Amount;
+                wallet.ModifiedAt = increaseWalletDTO.DateTime;
                 await _walletRepo.UpdateWalletAsync(wallet);
                
                 return new IncreaseWalletBalanceResponse(true, "Wallet balance increased successfully");
@@ -84,14 +84,14 @@ namespace Wasalnyy.BLL.Service.Implementation
         public async Task<TransferWalletResponse> HandleTransferWalletMoneyFromRiderToDriver(TransferMoneyBetweenUsersDTO transferDto)
         {
 
-            // w kman el ergistration w create wallet w leh fl json byb2a maktob dommy data s7 ? w kman el log fl increase wallet balance w 4of mwdo3 el context ely mwgod fl sevice deh 
-            //w mwdoo3 ek data an ha5liha fl transefer yb3to el date  w t4of el 7agat el zyada btat3 mahmoud  test insert transaction beacuse of id trip
+            // w kman el ergistration w create wallet 
+            //  w t4of el 7agat el zyada btat3 mahmoud 
             // w 7laya enk mynf34 tndah 3la repo enta tendah 3la service 23ml increas wallet balance dto
-
 
             
 
-            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            using var transaction =  await _walletRepo.BeginTransactionAsync();
 
             try
             {
@@ -172,7 +172,7 @@ namespace Wasalnyy.BLL.Service.Implementation
 
 
                 // 8- save all changes
-                await _context.SaveChangesAsync();
+                await _walletRepo.SaveChangesAsync();
 
                 // 9- commit
                 await transaction.CommitAsync();

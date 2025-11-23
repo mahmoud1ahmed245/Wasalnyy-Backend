@@ -89,8 +89,16 @@ namespace Wasalnyy.BLL.Service.Implementation
                 //3- save payment transaction in payment getway table as successful
                 await paymentGetwayRepo.AddPaymentAsync(paymentEntity);
 
-                //4-increase Wallet balance of the rider
-                var walletResponse = await walletService.IncreaseWalletAsync(paymentDetails.RiderId, paymentDetails.Amount,dateTime);
+                // 4 - Increase Wallet balance of the rider
+                var walletResponse = await walletService.IncreaseWalletAsync(
+                    new IncreaseWalletDTO
+                    {
+                        UserId = paymentDetails.RiderId,
+                        Amount = paymentDetails.Amount,
+                        DateTime = dateTime
+                    }
+                );
+
                 if (!walletResponse.IsSuccess)
                     return new RiderPaymentSuccessResponse(false, $"Error updating wallet: {walletResponse.Message}");
 
@@ -135,31 +143,7 @@ namespace Wasalnyy.BLL.Service.Implementation
 
 
 
-            ////1-check if this rider valid or not  
-            //var rider = await riderService.GetByIdAsync(paymentDetails.RiderId);
-            //if (rider == null)
-            //    return new RiderPaymentSuccessResponse(false, "Rider not found ");
 
-            //var paymentEntity = _mapper.Map<GatewayPaymentTransactions>(paymentDetails);
-            ////1- save payment transaction in payment getway table as successful
-
-            //try
-            //{
-
-            //    await paymentGetwayRepo.AddPaymentAsync(paymentEntity);
-            //}
-            //catch (Exception ex)
-            //{
-            //    var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
-            //    return new RiderPaymentSuccessResponse(false, $"Error saving payment: {innerMessage}");
-            //}
-            ////2-Increase Wallet balance 
-
-            //var walletResponse = await walletService.IncreaseWalletAsync(paymentDetails.RiderId, paymentDetails.Amount,DateTime.Now);
-            //if (!walletResponse.IsSuccess)
-            //    return new RiderPaymentSuccessResponse(false, $"Error updating wallet: {walletResponse.Message}");
-
-            //return new RiderPaymentSuccessResponse(true, "Payment processed successfully.");
         }
 
         private async Task<RiderPaymentSuccessResponse> HandleFailedPaymentAsync(RiderPaymentDetailsDTO paymentDetails)
@@ -169,6 +153,7 @@ namespace Wasalnyy.BLL.Service.Implementation
             try
             {
                 await paymentGetwayRepo.AddPaymentAsync(paymentEntity);
+                await paymentGetwayRepo.SaveChangesAsync();
             }
             catch (Exception ex)
             {
