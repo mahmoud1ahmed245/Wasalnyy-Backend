@@ -100,12 +100,7 @@ namespace Wasalnyy.BLL.Service.Implementation
         {
 
 
-           await WithdrawFromWalletAsync(new WithdrawFromWalletDto
-            {
-                UserId= transferDto.RiderId,
-                Amount= transferDto.Amount,
-                CreatedAt= transferDto.CreatedAt
-            });
+          
             using var transaction =  await _walletRepo.BeginTransactionAsync();
 
             try
