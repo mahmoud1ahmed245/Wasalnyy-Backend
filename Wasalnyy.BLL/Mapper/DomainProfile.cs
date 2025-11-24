@@ -17,6 +17,7 @@ namespace Wasalnyy.BLL.Mapper
         {
             CreateMap<RiderPaymentDetailsDTO, GatewayPayment>();
 
+            CreateMap<CreateWalletTransactionLogDTO, WalletTransactionLogs>();
 
 
 
