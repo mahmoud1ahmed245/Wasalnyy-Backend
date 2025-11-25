@@ -84,25 +84,10 @@ namespace Wasalnyy.BLL.Service.Implementation
 
 
                 return new IncreaseWalletBalanceResponse(true, "Wallet balance increased successfully");
+                }
 
                 
-              var res=  await walletTransactionService.CreateAsync(new CreateWalletTransactionLogDTO
-                {
-                    WalletId = wallet.Id,
-                    Amount = increaseWalletDTO.Amount,
-                    TransactionType = DAL.Enum.WalletTransactionType.Credit,
-                    Description = $"user charge his wallet by {increaseWalletDTO.Amount}",
-                    CreatedAt = increaseWalletDTO.DateTime
 
-                });
-
-                if(!res.isSuccess)
-                    return new IncreaseWalletBalanceResponse(false, $"balance value is increased but An error occurred while creating wallet transaction log: {res.Message}");
-
-
-                return new IncreaseWalletBalanceResponse(true, "Wallet balance increased successfully");
-
-            }
             catch (Exception ex)
             {
                 var innerMessage = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
