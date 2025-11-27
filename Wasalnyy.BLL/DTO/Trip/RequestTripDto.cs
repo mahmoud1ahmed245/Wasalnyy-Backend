@@ -12,13 +12,13 @@ namespace Wasalnyy.BLL.DTO.Trip
 {
         public class RequestTripDto
         {
-        [Required]
-        public PaymentMethod PaymentMethod { get; set; }
-        [Required]
-        [JsonPropertyName("PickupCoordinates")]
-        public Coordinates PickupCoordinates { get; set; }
-        [Required]
-        [JsonPropertyName("DistinationCoordinates")]
-        public Coordinates DistinationCoordinates { get; set; }
+            [Required]
+            public string PaymentMethod { get; set; }
+            [Required]
+            [JsonPropertyName("PickupCoordinates")]
+            public Coordinates PickupCoordinates { get; set; }
+            [Required]
+            [JsonPropertyName("DistinationCoordinates")]
+            public Coordinates DistinationCoordinates { get; set; }
         }
 }

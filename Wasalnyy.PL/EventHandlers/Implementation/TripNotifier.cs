@@ -88,7 +88,7 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
                     await _hubContext.Clients.Group($"trip_{dto.Id}").SendAsync("tripCanceled", dto);
 
                     if(cashCancelationFees != null)
-                        await _hubContext.Clients.Group($"trip_{dto.Id}").SendAsync("riderCashCancelationFees", cashCancelationFees);
+                        await _hubContext.Clients.Group($"trip_{dto.Id}").SendAsync("cashFromRiderToDriver", cashCancelationFees);
 
                     if (driverConId != null && riderConIds.Count() > 0)
                     {

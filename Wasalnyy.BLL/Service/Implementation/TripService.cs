@@ -79,7 +79,7 @@ namespace Wasalnyy.BLL.Service.Implementation
             (trip.DistanceKm, trip.DurationMinutes) = await _routeService.CalculateDistanceAndDurationAsync(trip.PickupCoordinates, trip.DistinationCoordinates);
             trip.Price = _pricingService.CalculatePrice(_mapper.Map<Trip, CalculatePriceDto>(trip));
 
-            if (dto.PaymentMethod == PaymentMethod.Wallet && !await _walletService.CheckUserBalanceAsync(riderId, (decimal)trip.Price))
+            if (dto.PaymentMethod == PaymentMethod.Wallet.ToString() && !await _walletService.CheckUserBalanceAsync(riderId, (decimal)trip.Price))
                 throw new WalletBalanceNotSufficientException($"Your wallet balance not sufficient");
 
             await _tripRepo.CreateTripAsync(trip);
@@ -410,7 +410,7 @@ namespace Wasalnyy.BLL.Service.Implementation
             }
 
 
-            if (trip.RiderId != userId || trip.RiderId != userId)
+            if (trip.DriverId != userId && trip.RiderId != userId)
                 throw new InvalidOperationException($"UserId did not match wiht any rider or driver");
 
             var oldStatus = trip.TripStatus;
@@ -439,9 +439,11 @@ namespace Wasalnyy.BLL.Service.Implementation
                 }
                 else if(trip.PaymentMethod == PaymentMethod.Cash)
                 {
-                    if(trip.RiderId == userId)
+                    cashCancelationFees = new CashCancelationFees { DistanceTraveledCost = distanceTraveledCost, Fees = 0 };
+
+                    if (trip.RiderId == userId)
                     {
-                        cashCancelationFees = new CashCancelationFees { DistanceTraveledCost= distanceTraveledCost , Fees = trip.Price * 0.01 };
+                        cashCancelationFees.Fees = trip.Price * 0.01;
                     }
                     else
                     {
@@ -463,7 +465,7 @@ namespace Wasalnyy.BLL.Service.Implementation
             if(!string.IsNullOrWhiteSpace(trip.DriverId))
             {
                 var driver = await _driverService.GetByIdAsync(trip.DriverId);
-                await _driverService.SetDriverAvailableAsync(userId, driver.Coordinates);
+                await _driverService.SetDriverAvailableAsync(trip.DriverId, driver.Coordinates);
             }
         }
     }

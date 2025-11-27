@@ -9,8 +9,8 @@ namespace Wasalnyy.BLL.DTO.Trip
     public class TripDto
     {
         public Guid Id { get; set; }
-        public PaymentMethod PaymentMethod { get; set; }
-        public TripStatus TripStatus { get; set; } = TripStatus.Requested;
+        public string PaymentMethod { get; set; }
+        public string TripStatus { get; set; }
         public double DistanceKm { get; set; }
         public double DurationMinutes { get; set; }
         public double Price { get; set; }

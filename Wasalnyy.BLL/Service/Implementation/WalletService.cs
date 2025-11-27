@@ -103,8 +103,8 @@ namespace Wasalnyy.BLL.Service.Implementation
         {
 
             int x = 0;
-            DriverRepo driverRepo = new DriverRepo(_context);
-            ReturnDriverDto driver2 = await driverService.GetByIdAsync("f3aabcbe-a853-4cb9-8409-c010f560f2dc");
+            //DriverRepo driverRepo = new DriverRepo(_context);
+            //ReturnDriverDto driver2 = await driverService.GetByIdAsync("f3aabcbe-a853-4cb9-8409-c010f560f2dc");
              
 
 

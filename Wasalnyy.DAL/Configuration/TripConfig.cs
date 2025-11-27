@@ -61,6 +61,11 @@
                 .HasForeignKey(t => t.ZoneId)
                 .OnDelete(DeleteBehavior.NoAction);
 
+            builder.Property(e => e.TripStatus)
+                .HasConversion<string>();
+
+            builder.Property(e => e.PaymentMethod)
+                .HasConversion<string>();
         }
     }
 }

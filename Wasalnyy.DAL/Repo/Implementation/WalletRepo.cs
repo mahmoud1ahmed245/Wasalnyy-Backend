@@ -26,7 +26,6 @@ namespace Wasalnyy.DAL.Repo.Implementation
         public async Task<Wallet?> GetWalletOfUserIdAsync(string userId)
         {
             return await _context.Wallets
-                .AsNoTracking()
                 .Include(w => w.Transactions)
                 .SingleOrDefaultAsync(w => w.UserId == userId);
         }
@@ -34,7 +33,6 @@ namespace Wasalnyy.DAL.Repo.Implementation
         public async Task<Wallet?> GetByIdAsync(Guid walletId)
         {
             return await _context.Wallets
-                .AsNoTracking()
                 .Include(w => w.Transactions)
                 .SingleOrDefaultAsync(w => w.Id == walletId);
         }
