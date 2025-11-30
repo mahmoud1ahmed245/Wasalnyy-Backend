@@ -54,6 +54,12 @@ namespace Wasalnyy.BLL.Common
             services.AddScoped<DriverServiceValidator>();
             services.AddScoped<TripServiceValidator>();
 
+            //review complain
+            services.AddScoped<IReviewService, ReviewService>();
+            services.AddScoped<IComplaintService, ComplaintService>();
+            services.AddScoped<ReviewServiceValidator>();      
+            
+
 
             // Register events and notifiers
             services.AddSingleton<DriverEvents>();

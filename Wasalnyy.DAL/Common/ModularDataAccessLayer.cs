@@ -15,6 +15,8 @@ namespace Wasalnyy.DAL.Common
             services.AddScoped<IWalletRepo, WalletRepo>();
             services.AddScoped<IWasalnyyHubConnectionRepo, WasalnyyHubConnectionRepo>();
             services.AddScoped<IUserFaceDataRepo, UserFaceDataRepo>();
+            services.AddScoped<IReviewRepo, ReviewRepo>();
+            services.AddScoped<IComplaintRepo, ComplaintRepo>();
             return services;
         }
     }

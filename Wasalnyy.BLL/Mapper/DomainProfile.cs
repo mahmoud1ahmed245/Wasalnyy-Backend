@@ -3,11 +3,13 @@ using Wasalnyy.BLL.DTO;
 using Wasalnyy.BLL.DTO.Driver;
 using Wasalnyy.BLL.DTO.Payment;
 using Wasalnyy.BLL.DTO.Pricing;
+using Wasalnyy.BLL.DTO.ReviewandReports;
 using Wasalnyy.BLL.DTO.Rider;
 using Wasalnyy.BLL.DTO.Trip;
 using Wasalnyy.BLL.DTO.Update;
 using Wasalnyy.BLL.DTO.Wallet;
 using Wasalnyy.BLL.DTO.Zone;
+using Wasalnyy.DAL.Repo.Implementation;
 
 namespace Wasalnyy.BLL.Mapper
 {
@@ -85,6 +87,15 @@ namespace Wasalnyy.BLL.Mapper
             CreateMap<Vehicle, VehicleDto>();
             CreateMap<DriverUpdateDto, Driver>().ForAllMembers(opt => opt.Condition((src, dest, value) => value != null));
             CreateMap<RiderUpdateDto, Rider>().ForAllMembers(opt => opt.Condition((src, dest, value) => value != null));
+            CreateMap<CreateReviewDto, Review>().ForAllMembers(opt=>opt.Condition((src, dest, value) => value != null));
+            CreateMap<UpdateReviewDto, Review>().ForAllMembers(opt => opt.Condition((src, dest, value) => value != null));
+            CreateMap<Review, ReturnReviewDto>()
+    .ForAllMembers(opt => opt.Condition((src, dest, value) => value != null));
+
+            CreateMap<CreateComplaintDto, Complaint>().ForAllMembers(opt => opt.Condition((src, dest, value) => value != null));
+            CreateMap<UpdateComplaintStatusDto, Complaint>().ForAllMembers(opt => opt.Condition((src, dest, value) => value != null));
+            CreateMap<ReturnComplaintDto, Complaint>();
+            CreateMap<ReviewStatistics, ReviewStatisticsDto>();
 
         }
     }
