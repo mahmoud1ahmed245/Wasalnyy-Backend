@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Wasalnyy.BLL.DTO.Trip;
 using Wasalnyy.BLL.EventHandlers.Abstraction;
 using Wasalnyy.DAL.Entities;
+using Wasalnyy.DAL.Enum;
 using Wasalnyy.PL.Hubs;
 
 namespace Wasalnyy.PL.EventHandlers.Implementation
@@ -24,7 +25,16 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
 
         public async Task OnTripRequested(TripDto dto)
         {
-            await _hubContext.Clients.Group($"driversAvailableInZone_{dto.ZoneId}").SendAsync("availableTripsInZone", dto);   
+            var _connectionService = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IWasalnyyHubService>();
+            var riderConIds = await _connectionService.GetAllUserConnectionsAsync(dto.RiderId);
+
+            if (riderConIds.Count() > 0)
+            {
+                foreach (var conId in riderConIds)
+                {
+                    await _hubContext.Clients.Client(conId).SendAsync("tripRequested", dto);
+                }
+            }
         }
 
         public async Task OnTripAccepted(TripDto dto)
@@ -37,7 +47,7 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
             if (driverConId != null && riderConIds.Count() > 0)
             {
                 await _hubContext.Groups.RemoveFromGroupAsync(driverConId, $"driversAvailableInZone_{dto.ZoneId}");
-                await _hubContext.Clients.Group($"driversAvailableInZone_{dto.ZoneId}").SendAsync("tripAcceptedFromAnotherDriver", dto.Id);
+                await _hubContext.Clients.Group($"driversAvailableInZone_{dto.ZoneId}").SendAsync("tripUnAvilable", dto.Id);
 
                 await _hubContext.Groups.AddToGroupAsync(driverConId, $"trip_{dto.Id}");
 
@@ -51,9 +61,51 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
             }
         }
 
-        public async Task OnTripCanceled(TripDto dto)
+        public async Task OnTripCanceled(TripDto dto, TripStatus oldStatus, CashCancelationFees? cashCancelationFees)
         {
-        }
+			var _connectionService = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IWasalnyyHubService>();
+
+            var riderConIds = await _connectionService.GetAllUserConnectionsAsync(dto.RiderId);
+
+            switch (oldStatus)
+            {
+                case TripStatus.Requested:
+                    foreach (var conId in riderConIds)
+                    {
+                        await _hubContext.Clients.Client(conId).SendAsync("tripCanceled", dto);
+                    }
+                    break;
+                case TripStatus.Confirmed:
+                    await _hubContext.Clients.Group($"driversAvailableInZone_{dto.ZoneId}").SendAsync("tripUnAvilable", dto.Id);
+                    foreach (var conId in riderConIds)
+                    {
+                        await _hubContext.Clients.Client(conId).SendAsync("tripCanceled", dto);
+                    }
+                    break;
+                case TripStatus.Accepted:
+                case TripStatus.Started:
+                    var driverConId = (await _connectionService.GetAllUserConnectionsAsync(dto.DriverId)).FirstOrDefault();
+                    await _hubContext.Clients.Group($"trip_{dto.Id}").SendAsync("tripCanceled", dto);
+
+                    if(cashCancelationFees != null)
+                        await _hubContext.Clients.Group($"trip_{dto.Id}").SendAsync("cashFromRiderToDriver", cashCancelationFees);
+
+                    if (driverConId != null && riderConIds.Count() > 0)
+                    {
+                        await _hubContext.Groups.RemoveFromGroupAsync(driverConId, $"trip_{dto.Id}");
+
+                        foreach (var conId in riderConIds)
+                        {
+                            await _hubContext.Groups.RemoveFromGroupAsync(conId, $"trip_{dto.Id}");
+
+                        }
+                    }
+
+                    break;
+                default:
+                    break;
+            }
+		}
 
         public async Task OnTripEnded(TripDto dto)
         {
@@ -81,6 +133,21 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
         public async Task OnTripStarted(TripDto dto)
         {
             await _hubContext.Clients.Group($"trip_{dto.Id}").SendAsync("tripStarted", dto);
+        }
+
+        public async Task OnTripConfirmed(TripDto dto)
+        {
+            await _hubContext.Clients.Group($"driversAvailableInZone_{dto.ZoneId}").SendAsync("availableTripsInZone", dto);
+
+            var _connectionService = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IWasalnyyHubService>();
+
+            var riderConIds = await _connectionService.GetAllUserConnectionsAsync(dto.RiderId);
+
+            foreach (var conId in riderConIds)
+            {
+                await _hubContext.Clients.Client(conId).SendAsync("tripConfirmed", dto);
+            }
+
         }
     }
 }

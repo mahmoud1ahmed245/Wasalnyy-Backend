@@ -17,9 +17,12 @@ namespace Wasalnyy.BLL.Mapper
     {
         public DomainProfile()
         {
-            CreateMap<RiderPaymentDetailsDTO, GatewayPayment>();
+            CreateMap<RiderPaymentDetailsDTO, GatewayPaymentTransactions>();
 
+            CreateMap<CreateWalletTransactionLogDTO, WalletTransactionLogs>();
 
+            CreateMap<AddWalletTranferMoneyDTO, WalletMoneyTransfer>();
+            CreateMap<CreateWalletDTO, Wallet>();
 
 
             CreateMap<Driver, ReturnDriverDto>()
@@ -41,7 +44,7 @@ namespace Wasalnyy.BLL.Mapper
             // Wallet mappings
             CreateMap<Wallet, WalletDto>().ReverseMap();
 
-            CreateMap<WalletTransaction, WalletTransactionDto>()
+            CreateMap<WalletTransactionLogs, AddWalletTransactionDto>()
                 .ForMember(dest => dest.TransactionType,
                            opt => opt.MapFrom(src => src.TransactionType.ToString()));
 
@@ -53,7 +56,9 @@ namespace Wasalnyy.BLL.Mapper
                 .ForMember(dest => dest.DistinationCoordinates, opt => opt.MapFrom(src => src.DistinationCoordinates))
                 .ForMember(dest => dest.RequestedDate, opt => opt.MapFrom(_ => DateTime.UtcNow))
                 .ForMember(dest => dest.TripStatus, opt => opt.MapFrom(_ => TripStatus.Requested))
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()));
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))
+                .ForMember(dest => dest.PickUpName, opt => opt.MapFrom(src => src.PickUpName))
+	            .ForMember(dest => dest.DestinationName, opt => opt.MapFrom(src => src.DestinationName));
 
             CreateMap<Trip, CalculatePriceDto>()
                 .ForMember(dest => dest.DistanceKm, opt => opt.MapFrom(src => src.DistanceKm))
@@ -61,6 +66,14 @@ namespace Wasalnyy.BLL.Mapper
 
 
             CreateMap<Trip, TripDto>();
+
+
+            CreateMap<Trip, TransferMoneyBetweenUsersDTO>()
+                .ForMember(dest => dest.DriverId, opt => opt.MapFrom(src => src.DriverId))
+                .ForMember(dest => dest.RiderId, opt => opt.MapFrom(src => src.RiderId))
+                .ForMember(dest => dest.Amount, opt => opt.MapFrom(src => src.Price))
+                .ForMember(dest => dest.TripId, opt => opt.MapFrom(src => src.Id))
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow));
 
             CreateMap<CreateZoneDto, Zone>()
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(_ => Guid.NewGuid()))

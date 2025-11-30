@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Wasalnyy.BLL.DTO.Pricing;
 using Wasalnyy.BLL.DTO.Trip;
+using Wasalnyy.BLL.DTO.Wallet;
 using Wasalnyy.BLL.Enents;
 using Wasalnyy.BLL.Exceptions;
 using Wasalnyy.BLL.Service.Abstraction;
@@ -26,12 +27,13 @@ namespace Wasalnyy.BLL.Service.Implementation
         private readonly IRouteService _routeService;
         private readonly IPricingService _pricingService;
         private readonly IZoneService _zoneService;
+        private readonly IWalletService _walletService;
         private readonly TripServiceValidator _validator;
         private readonly IMapper _mapper;
 
         public TripService(ITripRepo tripRepo, IDriverService driverService, TripEvents tripEvents,
             IRiderService riderService, IRouteService routeService, IPricingService pricingService,
-            IZoneService zoneService, TripServiceValidator tripServiceValidator, IMapper mapper)
+            IZoneService zoneService, TripServiceValidator tripServiceValidator, IWalletService walletService, IMapper mapper)
         {
             _tripRepo = tripRepo;
             _driverService = driverService;
@@ -41,6 +43,7 @@ namespace Wasalnyy.BLL.Service.Implementation
             _pricingService = pricingService;
             _zoneService = zoneService;
             _validator = tripServiceValidator;
+            _walletService = walletService;
             _mapper = mapper;
         }
 
@@ -56,6 +59,7 @@ namespace Wasalnyy.BLL.Service.Implementation
 
             if(riderActiveTripe != null)
                 throw new AlreadyInTripException($"Rider with id {riderId} already in trip.");
+
 
             var trip = _mapper.Map<RequestTripDto, Trip>(dto);
 
@@ -75,10 +79,39 @@ namespace Wasalnyy.BLL.Service.Implementation
             (trip.DistanceKm, trip.DurationMinutes) = await _routeService.CalculateDistanceAndDurationAsync(trip.PickupCoordinates, trip.DistinationCoordinates);
             trip.Price = _pricingService.CalculatePrice(_mapper.Map<Trip, CalculatePriceDto>(trip));
 
+            if (dto.PaymentMethod == PaymentMethod.Wallet.ToString() && !await _walletService.CheckUserBalanceAsync(riderId, (decimal)trip.Price))
+                throw new WalletBalanceNotSufficientException($"Your wallet balance not sufficient");
+
             await _tripRepo.CreateTripAsync(trip);
             await _tripRepo.SaveChangesAsync();
 
             _tripEvents.FireTripRequested(_mapper.Map<Trip, TripDto>(trip));
+        }
+        public async Task ConfirmTripAsync(string riderId, Guid tripId)
+        {
+            _validator.ValidateConfirmTrip(riderId, tripId);
+
+            var rider = await _riderService.GetByIdAsync(riderId);
+            if (rider == null)
+                throw new NotFoundException($"Rider with ID '{riderId}' was not found.");
+
+            var trip = await _tripRepo.GetByIdAsync(tripId);
+
+            if (trip == null)
+                throw new NotFoundException($"Trip with ID '{tripId}' was not found.");
+
+            if (trip.TripStatus != TripStatus.Requested)
+                throw new InvalidOperationException($"Trip {tripId} is not in a requestable state. Current status: {trip.TripStatus}");
+
+
+            if (rider.RiderId != trip.RiderId)
+                throw new InvalidOperationException($"rider with id {rider.RiderId} can not confirm another rider trip");
+
+            trip.TripStatus = TripStatus.Confirmed;
+            await _tripRepo.UpdateTripAsync(trip);
+            await _tripRepo.SaveChangesAsync();
+
+            _tripEvents.FireTripConfirmed(_mapper.Map<Trip, TripDto>(trip));
         }
 
         public async Task AcceptTripAsync(string driverId, Guid tripId)
@@ -89,7 +122,7 @@ namespace Wasalnyy.BLL.Service.Implementation
             if (trip == null)
                 throw new NotFoundException($"Trip with ID '{tripId}' was not found.");
 
-            if (trip.TripStatus != TripStatus.Requested)
+            if (trip.TripStatus != TripStatus.Confirmed)
                 throw new InvalidOperationException($"Trip {tripId} is not in a requestable state. Current status: {trip.TripStatus}");
 
 
@@ -165,11 +198,20 @@ namespace Wasalnyy.BLL.Service.Implementation
             if (trip.DriverId != driverId)
                 throw new DriverMismatchException($"Driver '{driverId}' is not assigned to trip '{tripId}'.");
 
+            if (trip.PaymentMethod == PaymentMethod.Wallet)
+            {
+                var transferTransaction = await _walletService.HandleTransferWalletMoneyFromRiderToDriver(_mapper.Map<Trip, TransferMoneyBetweenUsersDTO>(trip));
+                if (!transferTransaction.IsSuccess)
+                    throw new WalletTransferException(transferTransaction.Message);
+            }
+                
+
             trip.TripStatus = TripStatus.Ended;
 
             await _tripRepo.UpdateTripAsync(trip);
             await _tripRepo.SaveChangesAsync();
 
+            
             await _driverService.SetDriverAvailableAsync(driverId, driver.Coordinates);
 
             _tripEvents.FireTripEnded(_mapper.Map<Trip, TripDto>(trip));
@@ -294,7 +336,7 @@ namespace Wasalnyy.BLL.Service.Implementation
         public async Task<IEnumerable<TripDto>> GetByRequestedTripsByZoneAsync(Guid zoneId)
         {
             _validator.ValidateGetByRequestedTripsByZone(zoneId);
-            return _mapper.Map<IEnumerable<Trip>, IEnumerable<TripDto>>( await _tripRepo.GetRequestedTripsByZoneAsync(zoneId));
+            return _mapper.Map<IEnumerable<Trip>, IEnumerable<TripDto>>( await _tripRepo.GetAvailableTripsByZoneAsync(zoneId));
         }
 
         public async Task<int> GetPagesCountAsync(int pageSize = 10)
@@ -353,6 +395,78 @@ namespace Wasalnyy.BLL.Service.Implementation
 
             await _tripRepo.UpdateTripAsync(trip);
             await _tripRepo.SaveChangesAsync();
+        }
+
+        public async Task CancelTripAsync(string userId, Guid tripId)
+        {
+            _validator.ValidateCancelTripAsync(userId, tripId);
+            var trip = await _tripRepo.GetByIdAsync(tripId);
+            if (trip == null)
+                throw new NotFoundException($"Trip with ID '{tripId}' was not found.");
+
+            if (trip.TripStatus == TripStatus.Ended || trip.TripStatus == TripStatus.Cancelled)
+            {
+                throw new InvalidOperationException("Trip is already Ended or Cancelled");
+            }
+
+
+            if (trip.DriverId != userId && trip.RiderId != userId)
+                throw new InvalidOperationException($"UserId did not match wiht any rider or driver");
+
+            var oldStatus = trip.TripStatus;
+            CashCancelationFees? cashCancelationFees = null;
+
+            if (trip.TripStatus == TripStatus.Started)
+            {
+                (double distanceKm, double durationMinutes) = await _routeService.CalculateDistanceAndDurationAsync(trip.PickupCoordinates, trip.CurrentCoordinates);
+                double distanceTraveledCost = _pricingService.CalculatePrice(new CalculatePriceDto { DistanceKm = distanceKm, DurationMinutes = durationMinutes });
+
+                if (trip.PaymentMethod == PaymentMethod.Wallet)
+                {
+                    var transferDto = _mapper.Map<Trip, TransferMoneyBetweenUsersDTO>(trip);
+                    transferDto.Amount = (decimal)distanceTraveledCost;
+
+                    var transferTransaction = await _walletService.HandleTransferWalletMoneyFromRiderToDriver(transferDto);
+
+                    if (!transferTransaction.IsSuccess)
+                        throw new WalletTransferException(transferTransaction.Message);
+
+                    var withdrawRes = await _walletService.WithdrawFromWalletAsync(new WithdrawFromWalletDto { UserId = userId, Amount = (decimal)(trip.Price * 0.01), Description = $"Cancellation fee", CreatedAt = DateTime.UtcNow });
+
+                    if (!withdrawRes.IsSuccess)
+                        throw new WithdrawException(withdrawRes.Message);
+
+                }
+                else if(trip.PaymentMethod == PaymentMethod.Cash)
+                {
+                    cashCancelationFees = new CashCancelationFees { DistanceTraveledCost = distanceTraveledCost, Fees = 0 };
+
+                    if (trip.RiderId == userId)
+                    {
+                        cashCancelationFees.Fees = trip.Price * 0.01;
+                    }
+                    else
+                    {
+                        var withdrawRes = await _walletService.WithdrawFromWalletAsync(new WithdrawFromWalletDto { UserId = userId, Amount = (decimal)(trip.Price * 0.01), Description = $"Cancellation fee", CreatedAt = DateTime.UtcNow });
+
+                        if (!withdrawRes.IsSuccess)
+                            throw new WithdrawException(withdrawRes.Message);
+                    }
+                }
+
+            }
+
+            trip.TripStatus = TripStatus.Cancelled;
+            await _tripRepo.UpdateTripAsync(trip);
+            await _tripRepo.SaveChangesAsync();
+
+            _tripEvents.FireTripCanceled(_mapper.Map<Trip,TripDto>(trip), oldStatus, cashCancelationFees);
+
+            if(!string.IsNullOrWhiteSpace(trip.DriverId))
+            {
+                var driver = await _driverService.GetByIdAsync(trip.DriverId);
+                await _driverService.SetDriverAvailableAsync(trip.DriverId, driver.Coordinates);
+            }
         }
     }
 }

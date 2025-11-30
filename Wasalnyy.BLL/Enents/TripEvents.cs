@@ -10,11 +10,13 @@ namespace Wasalnyy.BLL.Enents
     public class TripEvents
     {
         public delegate Task TripDel(TripDto dto);
+        public delegate Task CancelTripDel(TripDto dto, TripStatus oldStatus, CashCancelationFees? cashCancelationFees);
         public event TripDel? TripRequested;
         public event TripDel? TripAccepted;
         public event TripDel? TripStarted;
         public event TripDel? TripEnded;
-        public event TripDel? TripCanceled;
+        public event CancelTripDel? TripCanceled;
+        public event TripDel? TripConfirmed;
         public void FireTripRequested(TripDto dto)
         {
             TripRequested?.Invoke(dto);
@@ -31,9 +33,14 @@ namespace Wasalnyy.BLL.Enents
         {
             TripEnded?.Invoke(dto).Wait();
         }
-        public void FireTripCanceled(TripDto dto)
+        public void FireTripCanceled(TripDto dto, TripStatus oldStatus , CashCancelationFees? cashCancelationFees)
         {
-            TripCanceled?.Invoke(dto).Wait();
+            TripCanceled?.Invoke(dto, oldStatus, cashCancelationFees).Wait();
+        }
+
+        public void FireTripConfirmed(TripDto dto)
+        {
+            TripConfirmed?.Invoke(dto).Wait();
         }
     }
 }

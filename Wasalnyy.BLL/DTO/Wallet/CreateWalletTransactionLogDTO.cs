@@ -6,13 +6,26 @@ using System.Threading.Tasks;
 
 namespace Wasalnyy.BLL.DTO.Wallet
 {
-    public class WalletTransactionDto
+
+ 
+    public class CreateWalletTransactionLogDTO
     {
         public Guid Id { get; set; }
+
+        // FK → Wallet
         public Guid WalletId { get; set; }
+   
+        // Amount involved
         public decimal Amount { get; set; }
-        public string TransactionType { get; set; } = string.Empty; // "Credit" or "Debit"
+
+        // Credit = add money, Debit = subtract money
+        public WalletTransactionType TransactionType { get; set; }
+
+        // Optional note (Ride #123, Stripe Payment, Withdraw, etc.)
         public string? Description { get; set; }
+
+        // Timestamp
         public DateTime CreatedAt { get; set; }
+        
     }
 }

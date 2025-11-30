@@ -50,7 +50,7 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
                     var _driverService = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IDriverService>();
                     var driver = await _driverService.GetByIdAsync(userId);
 
-                    if (driver != null && driver.DriverStatus == DriverStatus.Available)
+                    if (driver != null && driver.DriverStatus == DriverStatus.Available.ToString())
                         await _driverService.SetDriverUnAvailableAsync(userId);
                 }
                     return;
@@ -95,7 +95,7 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
                 var _driverService = _serviceScopeFactory.CreateScope().ServiceProvider.GetRequiredService<IDriverService>();
                 var driver = await _driverService.GetByIdAsync(userId);
 
-                if(driver != null && driver.DriverStatus == DriverStatus.Available)
+                if(driver != null && driver.DriverStatus == DriverStatus.Available.ToString())
                     await _driverService.SetDriverUnAvailableAsync(userId);
             }
 

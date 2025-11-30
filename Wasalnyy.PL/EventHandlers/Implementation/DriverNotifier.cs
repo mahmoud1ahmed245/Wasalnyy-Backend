@@ -36,7 +36,7 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
 
                 if(trip != null)
                 {
-                    if(trip.TripStatus == TripStatus.Accepted)
+                    if(trip.TripStatus.ToString() == TripStatus.Accepted.ToString())
                     {
                         await _hubContext.Clients.GroupExcept($"trip_{trip.Id}", conId).SendAsync("yourDriverLocationUpdated", coordinates);
                     }

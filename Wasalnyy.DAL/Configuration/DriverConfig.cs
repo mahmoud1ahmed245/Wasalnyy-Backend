@@ -22,6 +22,10 @@ namespace Wasalnyy.DAL.Configuration
                     .HasColumnName("Lng")
                     .IsRequired();
             });
+
+
+            builder.Property(e => e.DriverStatus)
+                .HasConversion<string>();
         }
     }
 }
