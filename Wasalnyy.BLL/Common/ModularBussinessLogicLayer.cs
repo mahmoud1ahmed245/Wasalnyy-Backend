@@ -61,9 +61,11 @@ namespace Wasalnyy.BLL.Common
             services.AddSingleton<TripEvents>();
             services.AddSingleton<WasalnyyHubEvents>();
             services.AddSingleton<IFaceService, FaceService>();
+            //chat hub event
+            services.AddSingleton<ChatHubEvent>();
 
 
-			services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
+            services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
 			var jwtSettings = configuration.GetSection("JwtSettings").Get<JwtSettings>();
 			var key = Encoding.UTF8.GetBytes(jwtSettings!.Key);
 			services.AddAuthentication(options =>
@@ -91,8 +93,9 @@ namespace Wasalnyy.BLL.Common
                         var path = context.HttpContext.Request.Path;
 
                         // If the request is for our SignalR hub
+
                         if (!string.IsNullOrEmpty(accessToken) &&
-                            path.StartsWithSegments("/Wasalnyy"))
+                           (path.StartsWithSegments("/Wasalnyy") || path.StartsWithSegments("/Chat")))
                         {
                             // Read the token from the query string
                             context.Token = accessToken;
@@ -127,10 +130,16 @@ namespace Wasalnyy.BLL.Common
             var tripEvents = scope.ServiceProvider.GetRequiredService<TripEvents>();
             var driverEvents = scope.ServiceProvider.GetRequiredService<DriverEvents>();
             var wasalnyyHubEvents = scope.ServiceProvider.GetRequiredService<WasalnyyHubEvents>();
+            var chatHubEvent = scope.ServiceProvider.GetRequiredService<ChatHubEvent>();
+
+
 
             var tripHandler = scope.ServiceProvider.GetRequiredService<ITripNotifier>();
             var driverHandler = scope.ServiceProvider.GetRequiredService<IDriverNotifier>();
             var wasalnyyHubHandler = scope.ServiceProvider.GetRequiredService<IWasalnyyHubNotifier>();
+            var chatHubHandler = scope.ServiceProvider.GetRequiredService<IChatHubEventHandler>();
+
+            chatHubEvent.SendMessage += chatHubHandler.OnSendMessage;
 
             tripEvents.TripRequested += tripHandler.OnTripRequested;
             tripEvents.TripAccepted += tripHandler.OnTripAccepted;

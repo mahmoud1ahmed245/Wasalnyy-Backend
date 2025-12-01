@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wasalnyy.BLL.DTO;
 using Wasalnyy.BLL.DTO.Wallet;
@@ -19,6 +20,8 @@ namespace Wasalnyy.API.Controllers
             _mapper = mapper;
         }
         [HttpPost("transfer-money-between-rider-driver")]
+        [Authorize(Roles = "Rider")]
+
         public async Task<IActionResult> TransferMoney([FromBody] TransferMoneyBetweenUsersDTO dto)
         {
             if (dto == null)

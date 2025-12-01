@@ -78,8 +78,10 @@ namespace Wasalnyy.PL
 			builder.Services.AddSingleton<IRiderNotifier, RiderNotifier>();
 			builder.Services.AddSingleton<ITripNotifier, TripNotifier>();
 			builder.Services.AddSingleton<IWasalnyyHubNotifier, WasalnyyHubNotifier>();
+            builder.Services.AddSingleton<IChatHubEventHandler, ChatHubEventHandler>();
 
-			builder.Services.AddScoped<WasalnyyOnlineActionFilter>();
+
+            builder.Services.AddScoped<WasalnyyOnlineActionFilter>();
 
 			builder.Services.AddHttpClient();
 
@@ -113,7 +115,10 @@ namespace Wasalnyy.PL
 			app.UseMiddleware<ExptionhandlingMiddleware>();
             app.UseWebSockets();
             app.MapHub<WasalnyyHub>("/Wasalnyy");
-			app.MapControllers();
+
+            app.MapHub<ChatHub>("/Chat");
+
+            app.MapControllers();
 			app.Run();
 		}
 	}

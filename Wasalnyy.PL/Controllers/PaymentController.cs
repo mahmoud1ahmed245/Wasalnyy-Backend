@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Wasalnyy.BLL.DTO.Payment;
 using Wasalnyy.BLL.Service.Implementation;
@@ -27,6 +28,8 @@ namespace Wasalnyy.PL.Controllers
 		}
 
         [HttpPost("handle-rider-payment")]
+        [Authorize(Roles = "Rider")]
+
         public async Task<IActionResult> HandleRiderPayment([FromBody] RiderPaymentDetailsDTO paymentDetails)
         {
             if (paymentDetails == null)
