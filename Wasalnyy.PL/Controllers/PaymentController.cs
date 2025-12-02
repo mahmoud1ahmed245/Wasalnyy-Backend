@@ -11,7 +11,8 @@ namespace Wasalnyy.PL.Controllers
 {
 	[Route("api/[controller]")]
 	[ApiController]
-	public class PaymentController : ControllerBase
+    [Authorize(Roles = "Rider")]
+    public class PaymentController : ControllerBase
 	{
 		private readonly IPaymentService _paymentService;
 
@@ -30,7 +31,7 @@ namespace Wasalnyy.PL.Controllers
 		}
 
         [HttpPost("handle-rider-payment")]
-        [Authorize(Roles = "Rider")]
+    
 
         public async Task<IActionResult> HandleRiderPayment([FromBody] HandlePaymentDTO handlePaymentDTO)
         {
