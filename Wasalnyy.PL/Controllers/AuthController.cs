@@ -11,10 +11,12 @@ namespace Wasalnyy.PL.Controllers
 	public class AuthController : ControllerBase
 	{
 		private readonly IAuthService _authService;
+		private readonly IFaceService _faceService;
 
-		public AuthController(IAuthService authService)
+		public AuthController(IAuthService authService, IFaceService faceService)
 		{
 			_authService = authService;
+			_faceService = faceService;
 		}
 
 		[HttpPost("login")]
@@ -24,6 +26,15 @@ namespace Wasalnyy.PL.Controllers
 			if (!result.Success)
 				return Unauthorized(result.Message);
 			return Ok(new { result.Message, result.Token });
+		}
+
+		[HttpPost("google-login")]
+		public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto dto)
+		{
+			var result = await _authService.GoogleLoginAsync(dto);
+			if (!result.Success)
+				return BadRequest(result);
+			return Ok(result);
 		}
 
 		[HttpPost("register/driver")]
@@ -57,7 +68,7 @@ namespace Wasalnyy.PL.Controllers
 			using var ms = new MemoryStream();
 			await model.FaceImage.CopyToAsync(ms);
 
-			var result = await _authService.RegisterDriverFaceAsync(model.DriverId, ms.ToArray());
+			var result = await _faceService.RegisterDriverFaceAsync(model.DriverId, ms.ToArray());
 
 			if (!result.Success)
 				return BadRequest(result.Message);
@@ -74,7 +85,7 @@ namespace Wasalnyy.PL.Controllers
 			using var ms = new MemoryStream();
 			await model.FaceImage.CopyToAsync(ms);
 
-			var result = await _authService.FaceLoginAsync(ms.ToArray());
+			var result = await _faceService.FaceLoginAsync(ms.ToArray());
 
 			if (!result.Success)
 				return Unauthorized(result.Message);
