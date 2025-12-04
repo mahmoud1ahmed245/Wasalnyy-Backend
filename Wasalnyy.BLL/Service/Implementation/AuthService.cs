@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
-using Google.Apis.Auth;
+using Wasalnyy.BLL.Helper;
+using Wasalnyy.DAL.Entities;
+using Wasalnyy.DAL.Repo.Abstraction;
 
 namespace Wasalnyy.BLL.Service.Implementation
 {
@@ -11,6 +13,9 @@ namespace Wasalnyy.BLL.Service.Implementation
 		private readonly SignInManager<User> _signInManager;
 		private readonly IEmailService _emailService;
 		private readonly string BaseUrl;
+		private readonly IFaceService _faceService;
+		private readonly IUserFaceDataRepo _faceRepo;
+		private readonly IWalletRepo _walletRepo;
 		private readonly IWalletService _walletService;
 		public AuthService(
 			UserManager<User> userManager,
@@ -18,16 +23,20 @@ namespace Wasalnyy.BLL.Service.Implementation
 			SignInManager<User> signInManager,
 			IEmailService emailService,
 			IConfiguration config,
-			IWalletRepo walletRepo,
-			IWalletService walletService)
+			IFaceService faceService,
+			IUserFaceDataRepo faceRepo,
+			IWalletRepo walletRepo, IWalletService walletService)
 		{
 			_userManager = userManager;
 			_jwtHandler = jwtHandler;
 			_signInManager = signInManager;
 			_emailService = emailService;
 			BaseUrl = config["BaseUrl"]!;
-			_walletService = walletService;
-        }
+			_faceRepo = faceRepo;
+			_walletRepo = walletRepo;
+			_faceService = faceService;
+			this._walletService = walletService;
+		}
 		public async Task<AuthResult> RegisterDriverAsync(RegisterDriverDto dto)
 		{
 			var existingUser = await _userManager.FindByEmailAsync(dto.Email);
@@ -200,51 +209,84 @@ namespace Wasalnyy.BLL.Service.Implementation
 				return new AuthResult { Success = false, Message = ex.Message };
 			}
 		}
-		public async Task<AuthResult> GoogleLoginAsync(GoogleLoginDto dto)
+		public async Task<AuthResult> RegisterDriverFaceAsync(string driverId, byte[] faceImage)
 		{
+			var driver = await _userManager.FindByIdAsync(driverId);
+			if (driver == null)
+				return new AuthResult { Success = false, Message = "Driver not found" };
+			double[] embedding;
 			try
 			{
-				var payload = await GoogleJsonWebSignature.ValidateAsync(dto.IdToken);
-				if (payload == null)
-					return new AuthResult { Success = false, Message = "Invalid Google token" };
-				var user = await _userManager.FindByEmailAsync(payload.Email);
-				if (user == null)
-				{
-					user = new Rider
-					{
-						UserName = payload.GivenName,
-						Email = payload.Email,
-						FullName = payload.Name,
-						PhoneNumber = "",
-						Provider = "Google",
-						CreatedAt = DateTime.UtcNow
-					};
-					var createResult = await _userManager.CreateAsync(user);
-					if (!createResult.Succeeded)
-						return new AuthResult { Success = false, Message = "Could not create user: " + string.Join(", ", createResult.Errors.Select(e => e.Description)) };
-					
-					await _userManager.AddToRoleAsync(user, "Rider");
-					await _walletService.CreateWalletAsync(new CreateWalletDTO
-					{
-						Balance = 0,
-						UserId = user.Id,
-						CreatedAt = DateTime.Now
-					});
-				}
-				if (user.IsSuspended)
-					return new AuthResult { Success = false, Message = "Your account is suspended." };
-				if (user.IsDeleted)
-					return new AuthResult { Success = false, Message = "Your account was deleted." };
-
-				var token = await _jwtHandler.GenerateToken(user);
-				return new AuthResult { Success = true, Message = "Google login successful", Token = token};
+				embedding = _faceService.ExtractEmbedding(faceImage);
 			}
-			catch (Exception ex)
+			catch
 			{
-				return new AuthResult { Success = false, Message = ex.Message };
+				return new AuthResult { Success = false, Message = "No face detected" };
 			}
+			var faceData = new UserFaceData
+			{
+				DriverId = driver.Id,
+				Embedding = EmbeddingSerializer.DoubleArrayToBytes(embedding)
+			};
+			await _faceRepo.AddAsync(faceData);
+			return new AuthResult { Success = true, Message = "Face registered successfully" };
 		}
-		
+		public async Task<AuthResult> FaceLoginAsync(byte[] faceImage)
+		{
+			double[] incomingEmbedding;
+			try
+			{
+				incomingEmbedding = _faceService.ExtractEmbedding(faceImage);
+			}
+			catch
+			{
+				return new AuthResult { Success = false, Message = "No face detected in image" };
+			}
+
+			var drivers = await _faceRepo.GetAllDriversAsync();
+			User? matchedUser = null;
+			double bestDistance = double.MaxValue;
+			foreach (var d in drivers)
+			{
+				double[] storedEmbedding = EmbeddingSerializer.BytesToDoubleArray(d.Embedding);
+				double distance = _faceService.CompareEmbeddings(storedEmbedding, incomingEmbedding);
+				if (distance < bestDistance)
+				{
+					bestDistance = distance;
+					matchedUser = d.Driver;
+				}
+			}
+			const double THRESHOLD = 0.6; // tune this
+			if (matchedUser != null && bestDistance <= THRESHOLD)
+			{
+				await _signInManager.SignInAsync(matchedUser, isPersistent: false);
+				var token = await _jwtHandler.GenerateToken(matchedUser);
+				return new AuthResult { Success = true, Message = "Face login successful", Token = token };
+			}
+			return new AuthResult { Success = false, Message = "Face not recognized" };
+		}
+		public async Task CreateWalletForUserAsync(User user)
+		{
+			// prevent admin from getting wallet
+			if (await _userManager.IsInRoleAsync(user, "Admin"))
+				return;
+
+			// Check if wallet already exists
+			var existingWallet = await _walletRepo.GetWalletOfUserIdAsync(user.Id);
+			if (existingWallet != null)
+				return;
+
+			var wallet = new Wallet
+			{
+				UserId = user.Id,
+				Balance = 0,
+			};
+
+			await _walletRepo.CreateAsync(wallet);
+			await _walletRepo.SaveChangesAsync();
+		}
+    
+
 	public async Task<AuthResult> UpdateEmailAsync(string userId, string newEmail)
 		{
 			var user = await _userManager.FindByIdAsync(userId);

@@ -69,13 +69,14 @@ namespace Wasalnyy.BLL.Common
             //review complain
             services.AddScoped<IReviewService, ReviewService>();
             services.AddScoped<IComplaintService, ComplaintService>();
-            services.AddScoped<ReviewServiceValidator>();
-			services.AddScoped<IFaceService, FaceService>();
+            services.AddScoped<ReviewServiceValidator>();      
+            
 
 
-			services.AddSingleton<DriverEvents>();
+            services.AddSingleton<DriverEvents>();
             services.AddSingleton<TripEvents>();
             services.AddSingleton<WasalnyyHubEvents>();
+            services.AddSingleton<IFaceService, FaceService>();
             //chat hub event
             services.AddSingleton<ChatHubEvent>();
 
