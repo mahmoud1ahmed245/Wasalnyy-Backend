@@ -1,4 +1,8 @@
-﻿namespace Wasalnyy.BLL.Service.Implementation
+﻿using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using Wasalnyy.BLL.Events;
+
+namespace Wasalnyy.BLL.Service.Implementation
 {
     public class TripService : ITripService
     {
@@ -448,6 +452,12 @@
 
             return (int)noPages;
         }
-        
-    }
+
+		public async Task<List<TripDto>> GetAllActiveTripsAsync()
+		{
+            return await _tripRepo.GetAllTrips().Where(t => t.TripStatus == TripStatus.Requested || t.TripStatus == TripStatus.Confirmed ||
+            t.TripStatus == TripStatus.Accepted || t.TripStatus == TripStatus.Started).
+                AsNoTracking().ProjectTo<TripDto>(_mapper.ConfigurationProvider).ToListAsync();
+		}
+	}
 }
