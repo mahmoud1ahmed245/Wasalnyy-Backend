@@ -4,6 +4,7 @@ namespace Wasalnyy.DAL.Repo.Abstraction
 {
     public interface IChatRepo
     {
+        public Task<string?> GetUserNameAsync(string userId);
         public Task<int> GetUserMessagesCountAsync(string userId);
         Task CreateAsync(Message message);
         Task<Message?> GetByIdAsync(int id);

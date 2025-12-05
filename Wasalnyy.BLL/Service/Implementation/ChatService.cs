@@ -19,7 +19,7 @@ namespace Wasalnyy.BLL.Service.Implementation
             _userManager = userManager;
             _mapper = mapper;
         }
-
+      
         // n3ml Dto
         public async Task<GetMessageDTO> SendMessageAsync(string senderId, string receiverId, string content)
         {
@@ -48,6 +48,15 @@ namespace Wasalnyy.BLL.Service.Implementation
 
         }
 
+        public async Task<string?> GetUserNameAsync(string userId)
+        {
+            if (string.IsNullOrWhiteSpace(userId))
+            {
+                return null;
+            }
+
+            return await _messageRepo.GetUserNameAsync(userId);
+        }
         public async Task<GetMessageDTO?> GetMessageByIdAsync(int id)
         {
             var message = await _messageRepo.GetByIdAsync(id);

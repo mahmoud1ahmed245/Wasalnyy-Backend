@@ -129,7 +129,11 @@ namespace Wasalnyy.DAL.Repo.Implementation
                            (m.SenderId == userId2 && m.ReceiverId == userId1))
                 .CountAsync();
         }
-
+        public async Task<string?> GetUserNameAsync(string userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            return user?.FullName;
+        }
         public async Task<IEnumerable<string>> GetChatParticipantsAsync(string userId)
         {
             return await _context.Messages

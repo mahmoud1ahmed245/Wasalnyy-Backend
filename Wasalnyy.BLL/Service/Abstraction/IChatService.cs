@@ -5,6 +5,9 @@ namespace Wasalnyy.BLL.Service
 {
     public interface IChatService
     {
+
+        public Task<string?> GetUserNameAsync(string userId);
+
         public Task<GetMessageDTO?> GetLastMessageAsync(string userId1, string userId2);
 
         public Task<IEnumerable<GetMessageDTO>> GetUnreadMessagesAsync(string receiverId);

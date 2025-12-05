@@ -208,5 +208,18 @@ namespace Wasalnyy.PL.Controllers
             return Ok(result);
         }
 
+        [HttpGet("user/{userId}/name")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetUserName(string userId)
+        {
+            var userName = await _chatService.GetUserNameAsync(userId);
+
+            if (userName == null)
+                return NotFound(new { message = "User not found" });
+
+            return Ok(new { userName });
+        }
+
     } 
 } 

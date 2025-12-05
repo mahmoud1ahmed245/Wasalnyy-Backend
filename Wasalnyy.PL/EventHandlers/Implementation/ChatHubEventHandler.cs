@@ -44,8 +44,8 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
 
             if (roles.Contains("Driver"))
             {
-                if (await _connectionService.IsOnlineAsync(userId))
-                    throw new AlreadyLoggedInWithAnotherDeviceException("You already logged in with another device.");
+               // if (await _connectionService.IsOnlineAsync(userId))
+                 //   throw new AlreadyLoggedInWithAnotherDeviceException("You already logged in with another device.");
 
             }
 
@@ -100,7 +100,7 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
             // If sender is a Driver and has more than one connection, throw exception
             if (senderRoles.Contains("Driver") && senderConnectionIds.Count() > 1)
             {
-                throw new AlreadyLoggedInWithAnotherDeviceException("Driver cannot be logged in on multiple devices");
+         //       throw new AlreadyLoggedInWithAnotherDeviceException("Driver cannot be logged in on multiple devices");
             }
 
             // Send to sender's other devices (excluding the one that sent the message)
