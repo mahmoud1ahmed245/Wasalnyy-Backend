@@ -42,12 +42,12 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
             if (!roles.Contains("Driver") && !roles.Contains("Rider"))
                 throw new UnauthorizedAccessException("You are not allowed to access this hub.");
 
-            if (roles.Contains("Driver"))
-            {
-               // if (await _connectionService.IsOnlineAsync(userId))
-                 //   throw new AlreadyLoggedInWithAnotherDeviceException("You already logged in with another device.");
+            //if (roles.Contains("Driver"))
+            //{
+            //    if (await _connectionService.IsOnlineAsync(userId))
+            //        throw new AlreadyLoggedInWithAnotherDeviceException("You already logged in with another device.");
 
-            }
+            //}
 
             await _connectionService.CreateConnectionAsync(new ChatHubConnection { SignalRConnectionId = connectionId, UserId = userId });
 
@@ -97,11 +97,11 @@ namespace Wasalnyy.PL.EventHandlers.Implementation
             // 4. Get all sender connection IDs
             var senderConnectionIds = await _connectionService.GetAllUserConnectionsAsync(senderId);
 
-            // If sender is a Driver and has more than one connection, throw exception
-            if (senderRoles.Contains("Driver") && senderConnectionIds.Count() > 1)
-            {
-         //       throw new AlreadyLoggedInWithAnotherDeviceException("Driver cannot be logged in on multiple devices");
-            }
+            //// If sender is a Driver and has more than one connection, throw exception
+            //if (senderRoles.Contains("Driver") && senderConnectionIds.Count() > 1)
+            //{
+            //    throw new AlreadyLoggedInWithAnotherDeviceException("Driver cannot be logged in on multiple devices");
+            //}
 
             // Send to sender's other devices (excluding the one that sent the message)
             var otherSenderConnections = senderConnectionIds.Where(id => id != senderConnectionId).ToList();
