@@ -99,6 +99,24 @@ namespace Wasalnyy.BLL.Mapper
             CreateMap<Complaint, UserReturnedComplain>();        
             CreateMap<ReviewStatistics, ReviewStatisticsDto>();
 
+            
+            CreateMap<Trip, TripDto>()
+    .ForMember(dest => dest.PaymentMethod,
+        opt => opt.MapFrom(src => src.PaymentMethod.ToString()))
+    .ForMember(dest => dest.TripStatus,
+        opt => opt.MapFrom(src => src.TripStatus.ToString()));
+
+            CreateMap<Rider, ReturnRiderDto>()
+       .ForMember(dest => dest.RiderId, opt => opt.MapFrom(src => src.Id))
+       .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => src.FullName))
+       .ForMember(dest => dest.phonenumber, opt => opt.MapFrom(src => src.PhoneNumber))
+       .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
+       .ForMember(dest => dest.Image, opt => opt.MapFrom(src => src.Image))
+            .ForMember(dest => dest.Gender, opt => opt.MapFrom(src => src.Gender))
+            .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(src => src.CreatedAt))
+            .ForMember(dest => dest.DateOfBirth, opt => opt.MapFrom(src => src.DateOfBirth));
+
+
         }
     }
 }

@@ -113,7 +113,7 @@ namespace Wasalnyy.PL.Controllers
             if (!result.Success)
                 return BadRequest(result.Message);
 
-            return Ok(result.Message);
+            return Ok(new {message=result.Message});
         }
 
     }

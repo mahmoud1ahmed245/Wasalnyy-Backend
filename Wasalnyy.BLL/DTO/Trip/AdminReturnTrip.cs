@@ -1,0 +1,27 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Wasalnyy.BLL.DTO.Trip
+{
+    public class AdminReturnTrip
+    {
+        public Guid Id { get; set; }
+        public string PaymentMethod { get; set; }
+        public string TripStatus { get; set; }
+        public double DistanceKm { get; set; }
+        public double DurationMinutes { get; set; }
+        public double Price { get; set; }
+        public DateTime RequestedDate { get; set; }
+        public DateTime? StartDate { get; set; }
+        public DateTime? ArrivalDate { get; set; }
+       
+        public string DriverId { get; set; }
+        public string RiderId { get; set; }
+        public Guid ZoneId { get; set; }
+        public string? PickUpName { get; set; }
+        public string? DestinationName { get; set; }
+    }
+}

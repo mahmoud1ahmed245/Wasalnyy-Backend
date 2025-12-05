@@ -48,5 +48,6 @@ namespace Wasalnyy.BLL.Service.Implementation
 
 			return new AuthResult { Success = true, Message = "Email confirmed successfully!" };
 		}
+
 	}
 }

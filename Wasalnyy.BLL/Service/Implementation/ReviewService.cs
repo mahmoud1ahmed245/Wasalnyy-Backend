@@ -22,10 +22,10 @@ namespace Wasalnyy.BLL.Service.Implementation
 
         public ReviewService(IReviewRepo reviewRepo, IMapper mapper, ReviewServiceValidator valid, ITripService trip)
         {
-            _reviewRepo = reviewRepo ?? throw new ArgumentNullException(nameof(reviewRepo));
-            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            _trip = trip ?? throw new ArgumentNullException(nameof(trip));
-            _valid = valid ?? throw new ArgumentNullException(nameof(valid));
+            _reviewRepo = reviewRepo ;
+            _mapper = mapper;
+            _trip = trip ;
+            _valid = valid ;
         }
 
         
@@ -249,7 +249,7 @@ namespace Wasalnyy.BLL.Service.Implementation
      
 
         
-      
+      // validation
         private bool IsReviewAuthor(Review review, string currentUserId)
         {
             return (review.ReviewerType == ReviewerType.Rider && review.RiderId == currentUserId) ||

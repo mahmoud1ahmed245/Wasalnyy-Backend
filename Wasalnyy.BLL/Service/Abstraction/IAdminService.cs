@@ -1,4 +1,5 @@
-﻿using Wasalnyy.BLL.DTO.Update;
+﻿using Wasalnyy.BLL.DTO.Rider;
+using Wasalnyy.BLL.DTO.Update;
 using Wasalnyy.DAL.Entities;
 using Wasalnyy.DAL.Enum;
 
@@ -6,25 +7,29 @@ namespace Wasalnyy.BLL.Service.Abstraction
 {
     public interface IAdminService
     {
-        
+
         // Riders
-        
-        Task<IEnumerable<Rider>> GetAllRidersAsync();
+        Task<ReturnRiderDto> GetriderByIdAsync(string id);
+
+
+        Task<IEnumerable<ReturnRiderDto>> GetAllRidersAsync();
         Task<double> GetRidersCount();
-        Task<Rider?> GetRiderByPhoneAsync(string phone);
-      
+        Task<ReturnRiderDto> GetRiderByPhoneAsync(string phone);
+
+
         Task<int> GetRiderTripCountAsync(string riderId);
 
         
-        Task<IEnumerable<Trip>> GetRiderTripsAsync(string riderId);
-        Task<IEnumerable<Trip>> GetRiderTripsAsyncByphone(string phonenum);
-        Task<IEnumerable<Complaint>> GetRiderComplainsByPhoneAsync(string phonenum);
-        Task<Complaint> GetRiderComplainByComplainsIdAsync(Guid id);
         
+        Task<IEnumerable<TripDto>> GetRiderTripsAsyncByphone(string phonenum);
+        Task<IEnumerable<Complaint>> GetRiderComplainsByPhoneAsync(string phonenum);
+        Task<IEnumerable<Complaint>> GetRiderAganinstComplainsByPhoneAsync(string phonenum);
+        Task<Complaint> GetRiderComplainByComplainsIdAsync(Guid id);
+
 
 
         // Drivers
-
+        Task<Driver> GetDriverByIdAsync(string id);
         Task<IEnumerable<Driver>> GetAllDriversAsync();
         Task<Driver?> GetDriverByLicenseAsync(string license);
        
@@ -32,7 +37,7 @@ namespace Wasalnyy.BLL.Service.Abstraction
         
 
    
-        Task<IEnumerable<Trip>> GetDriverTripsAsync(string driverId);
+       
         Task<IEnumerable<Trip>> GetDriverTripsAsyncByLicen(string license);
         Task<IEnumerable<Complaint>> GetDriverSubmitedComplainsBylicenAsync(string licen);
         Task<IEnumerable<Complaint>> GetDriverAgainstComplainsBylicenAsync(string licen);
@@ -46,19 +51,23 @@ namespace Wasalnyy.BLL.Service.Abstraction
         // Trips
         
 
-        Task<Trip?> GetTripByIdAsync(Guid id);
+        Task<TripDto> GetTripByIdAsync(Guid id);
 
         Task<IEnumerable<Trip>> GetTripsByStatusAsync(TripStatus status);
 
-        
-        
+        Task<TripPaginationDto> GetDriverTripsAsync(string driverId, int pageNumber , int pageSize );
 
-       
+        Task<TripPaginationDto> GetRiderTripsAsync(string riderId, int pageNumber , int pageSize );
 
 
-       
+
+
+
+
+
+
         // Dashboard / Reports
-       
+
         Task<int> GetTotalTripsAsync();
         Task<int> GetTotalDriversAsync();
        
