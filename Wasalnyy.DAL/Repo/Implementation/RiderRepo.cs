@@ -61,6 +61,20 @@ namespace Wasalnyy.DAL.Repo.Implementation
                 .ToListAsync();
         }
 
+        public async Task<IEnumerable<Complaint>> GetRiderAgainstComplainsByPhone(string phone)
+        {
+            var rider = await _context.Riders
+                .FirstOrDefaultAsync(p => p.PhoneNumber == phone);
+
+            if (rider == null)
+                return Enumerable.Empty<Complaint>();
+
+            return await _context.Complaints
+                .Where(c => c.AgainstUserId == rider.Id)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
         public async Task UpdateRiderAsync(Rider rider)
         {
             _context.Entry(rider).State = EntityState.Modified;

@@ -20,6 +20,12 @@ namespace Wasalnyy.PL.Controllers.Admin
             var riders = await _adminService.GetAllRidersAsync();
             return Ok(riders);
         }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Getriderbyid(string id)
+        {
+            var drivers = await _adminService.GetriderByIdAsync(id);
+            return Ok(drivers);
+        }
 
         [HttpGet("phone/{phone}")]
         public async Task<IActionResult> GetRiderByPhone(string phone)
@@ -36,23 +42,19 @@ namespace Wasalnyy.PL.Controllers.Admin
             return Ok(new { riderId, tripCount = count });
         }
 
-        [HttpGet("{riderId}/trips")]
-        public async Task<IActionResult> GetRiderTrips(string riderId)
-        {
-            var trips = await _adminService.GetRiderTripsAsync(riderId);
-            return Ok(trips);
-        }
-        [HttpGet("phone/{phone}/trips")]
-        public async Task<IActionResult> GetRiderTripsByPhone(string phone)
-        {
-            var trips = await _adminService.GetRiderTripsAsyncByphone(phone);
-            return Ok(trips);
-        }
-
+       
+       
         [HttpGet("phone/{phone}/complaints")]
         public async Task<IActionResult> GetRiderComplaintsByPhone(string phone)
         {
             var complaints = await _adminService.GetRiderComplainsByPhoneAsync(phone);
+            return Ok(complaints);
+        }
+
+        [HttpGet("phone/{phone}/againstcomplaints")]
+        public async Task<IActionResult> GetRiderAgainstComplaintsByPhone(string phone)
+        {
+            var complaints = await _adminService.GetRiderAganinstComplainsByPhoneAsync(phone);
             return Ok(complaints);
         }
 
